@@ -114,34 +114,48 @@ nav.hide{transform:translateY(-100%)}
 .exp-tags span{font-size:.6rem;font-weight:600;letter-spacing:.06em;padding:.3rem .6rem;border-radius:4px;background:rgba(255,255,255,.06);color:rgba(255,245,235,.5);text-transform:uppercase;transition:all .3s}
 
 .projects{position:relative;overflow:hidden;padding:7rem 2.5rem;background:linear-gradient(180deg,#0c1c50,#0a1840)}
-.projects-inner{max-width:1200px;margin:0 auto}
-.projects-layout{display:grid;gap:2rem;margin-top:2.5rem}
-.proj{border-radius:20px;overflow:hidden;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);transition:all .4s}
-.proj:hover{border-color:rgba(0,212,255,.15);box-shadow:0 30px 80px rgba(0,0,0,.35)}
-.proj-top{display:grid;grid-template-columns:1.4fr 1fr}
-.proj-top.flip{grid-template-columns:1fr 1.4fr}
-.proj-thumb{position:relative;overflow:hidden;min-height:260px;cursor:pointer}
-.proj-thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .5s ease}
-.proj:hover .proj-thumb img{transform:scale(1.04)}
-.proj-label{position:absolute;top:1rem;left:1rem;font-family:var(--font-mono);font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;padding:.35rem .8rem;border-radius:6px;backdrop-filter:blur(12px);z-index:2}
-.label-ux{background:rgba(0,0,0,.5);color:var(--pool);border:1px solid rgba(0,212,255,.3)}
-.label-vfx{background:rgba(0,0,0,.5);color:var(--coral);border:1px solid rgba(255,107,127,.3)}
-.label-game{background:rgba(0,0,0,.5);color:var(--sunset-purple);border:1px solid rgba(192,132,252,.3)}
-.label-ai{background:rgba(0,0,0,.5);color:#4ade80;border:1px solid rgba(74,222,128,.3)}
-.proj-info{padding:2rem;display:flex;flex-direction:column;justify-content:center}
-.proj-info h3{font-family:var(--font-display);font-size:1.5rem;font-weight:700;margin-bottom:.5rem}
-.proj-info p{color:rgba(255,245,235,.55);font-size:.85rem;line-height:1.8;margin-bottom:1rem}
-.proj-tags{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1.2rem}
-.proj-tags span{font-size:.6rem;font-weight:600;letter-spacing:.06em;padding:.25rem .55rem;border-radius:4px;background:rgba(255,255,255,.06);color:rgba(255,245,235,.5);text-transform:uppercase}
-.proj-link{font-family:var(--font-mono);font-size:.75rem;color:var(--pool);text-decoration:none;display:inline-flex;align-items:center;gap:.4rem;transition:gap .3s}
-.proj-link:hover{gap:.8rem}
+.projects-inner{max-width:1280px;margin:0 auto}
+.projects .section-note{max-width:680px;color:rgba(255,245,235,.52);font-size:1rem;line-height:1.8;margin-top:-.6rem;text-wrap:pretty}
+.projects-layout{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:1.1rem;margin-top:2.5rem}
+.proj{grid-column:span 4;border-radius:8px;overflow:hidden;background:rgba(255,255,255,.03);border:1px solid rgba(255,245,235,.07);transition:transform .35s cubic-bezier(.25,.46,.45,.94),border-color .35s,box-shadow .35s;display:flex;flex-direction:column;min-height:100%;box-shadow:inset 0 1px 0 rgba(255,255,255,.035)}
+.proj:hover{transform:translateY(-6px);border-color:rgba(255,245,235,.14);box-shadow:0 28px 80px rgba(0,0,0,.32)}
+#proj-bizsim{grid-column:1/-1;order:-1;background:linear-gradient(135deg,rgba(255,245,235,.055),rgba(94,234,212,.035) 46%,rgba(255,255,255,.02));border-color:rgba(255,245,235,.13)}
+.proj-top{display:flex;flex-direction:column;flex:1}
+#proj-bizsim .proj-top{display:grid;grid-template-columns:.9fr 1.15fr;min-height:460px}
+.proj-top.flip{grid-template-columns:1fr}
+.proj-thumb{position:relative;overflow:hidden;aspect-ratio:16/10;min-height:0;cursor:pointer;background:rgba(0,0,0,.18)}
+#proj-bizsim .proj-thumb{aspect-ratio:auto;min-height:460px}
+.proj:not(#proj-bizsim) .proj-thumb{order:-1}
+.proj-thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .55s ease,filter .55s ease}
+.proj:hover .proj-thumb img{transform:scale(1.035);filter:saturate(1.06) contrast(1.04)}
+.proj-label{position:absolute;top:1rem;left:1rem;font-family:var(--font-mono);font-size:.58rem;letter-spacing:.16em;text-transform:uppercase;padding:.34rem .72rem;border-radius:999px;backdrop-filter:blur(12px);z-index:2;background:rgba(4,10,32,.58);border:1px solid rgba(255,245,235,.12)}
+.label-ux{color:var(--pool)}
+.label-vfx{color:var(--coral)}
+.label-game{color:var(--sunset-purple)}
+.label-ai{color:var(--mint)}
+.proj-info{padding:1.45rem;display:flex;flex-direction:column;justify-content:space-between;flex:1}
+#proj-bizsim .proj-info{padding:2.2rem}
+.proj-info h3{font-family:var(--font-display);font-size:clamp(1.45rem,2vw,2rem);font-weight:700;line-height:1.05;margin-bottom:.7rem;text-wrap:balance}
+#proj-bizsim .proj-info h3{font-size:clamp(2rem,4vw,3.4rem);max-width:11ch}
+.proj-info p{color:rgba(255,245,235,.58);font-size:.88rem;line-height:1.75;margin-bottom:1rem;text-wrap:pretty}
+#proj-bizsim .proj-info p{font-size:1rem;color:rgba(255,245,235,.66);max-width:34rem}
+.proj-case-meta{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:1px solid rgba(255,245,235,.08);border-radius:8px;overflow:hidden;margin:1rem 0 1.1rem;background:rgba(255,245,235,.05)}
+.proj-case-meta div{padding:.75rem .8rem;border-right:1px solid rgba(255,245,235,.08)}
+.proj-case-meta div:last-child{border-right:0}
+.proj-case-meta span{display:block;font-family:var(--font-mono);font-size:.55rem;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,245,235,.36);margin-bottom:.35rem}
+.proj-case-meta strong{display:block;color:rgba(255,245,235,.72);font-size:.72rem;line-height:1.45;font-weight:600}
+.proj-tags{display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:1rem}
+.proj-tags span{font-size:.56rem;font-weight:600;letter-spacing:.06em;padding:.24rem .5rem;border-radius:4px;background:rgba(255,255,255,.055);color:rgba(255,245,235,.48);text-transform:uppercase}
+.proj-link{font-family:var(--font-mono);font-size:.72rem;color:var(--pool);text-decoration:none;display:inline-flex;align-items:center;gap:.4rem;transition:gap .3s,color .3s}
+.proj-link:hover{gap:.8rem;color:var(--cream)}
 /* Gallery strip - clickable thumbnails */
-.proj-gallery{display:flex;gap:8px;padding:0 1.2rem 1.2rem;overflow-x:auto;scrollbar-width:thin;scrollbar-color:rgba(0,212,255,.2) transparent}
+.proj-gallery{display:flex;gap:.45rem;padding:0 1rem 1rem;overflow-x:auto;scrollbar-width:thin;scrollbar-color:rgba(255,245,235,.14) transparent}
 .proj-gallery::-webkit-scrollbar{height:4px}
-.proj-gallery::-webkit-scrollbar-thumb{background:rgba(0,212,255,.3);border-radius:2px}
-.proj-gallery img{height:200px;border-radius:8px;object-fit:cover;flex-shrink:0;border:2px solid rgba(255,255,255,.06);opacity:.65;transition:all .3s;cursor:pointer}
-.proj-gallery img:hover{opacity:1;border-color:rgba(0,212,255,.3)}
-.proj-gallery img.active{opacity:1;border-color:var(--pool);box-shadow:0 0 12px rgba(0,212,255,.25)}
+.proj-gallery::-webkit-scrollbar-thumb{background:rgba(255,245,235,.18);border-radius:2px}
+.proj-gallery img{height:76px;width:116px;border-radius:6px;object-fit:cover;flex-shrink:0;border:1px solid rgba(255,255,255,.08);opacity:.58;transition:opacity .3s,border-color .3s,transform .3s;cursor:pointer}
+#proj-bizsim .proj-gallery img{height:92px;width:144px}
+.proj-gallery img:hover{opacity:1;border-color:rgba(255,245,235,.24);transform:translateY(-2px)}
+.proj-gallery img.active{opacity:1;border-color:var(--pool);box-shadow:0 0 12px rgba(0,212,255,.18)}
 
 /* Lightbox */
 .lightbox{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.92);display:none;align-items:center;justify-content:center;cursor:zoom-out;backdrop-filter:blur(8px);animation:lbIn .3s ease}
@@ -211,8 +225,14 @@ footer{padding:1.5rem 2.5rem;text-align:center;border-top:1px solid rgba(255,255
   .about-inner{grid-template-columns:1fr;gap:2.5rem}
   .expertise-cards{grid-template-columns:repeat(2,1fr)}
   .exp-card-product{grid-column:1/-1;min-height:320px}
-  .proj-top,.proj-top.flip{grid-template-columns:1fr}
-  .proj-thumb{min-height:200px}
+  .projects-layout{grid-template-columns:1fr}
+  .proj,#proj-bizsim{grid-column:1/-1}
+  #proj-bizsim .proj-top{grid-template-columns:1fr;min-height:0}
+  #proj-bizsim .proj-thumb{min-height:260px}
+  .proj-thumb{min-height:220px}
+  .proj-case-meta{grid-template-columns:1fr}
+  .proj-case-meta div{border-right:0;border-bottom:1px solid rgba(255,245,235,.08)}
+  .proj-case-meta div:last-child{border-bottom:0}
   nav{padding:1rem 1.5rem}
   .about,.expertise,.projects,.experience-section,.education-section,.contact-section{padding:4rem 1.5rem}
   .nav-links{display:none;position:fixed;inset:0;background:rgba(12,20,69,.97);backdrop-filter:blur(20px);flex-direction:column;align-items:center;justify-content:center;gap:2rem;z-index:99}
@@ -300,6 +320,7 @@ footer{padding:1.5rem 2.5rem;text-align:center;border-top:1px solid rgba(255,255
 <section class="projects" id="projects">
   <div class="projects-inner">
     <div class="stag">✦ Selected Work</div><h2 class="stitle">Projects</h2>
+    <p class="section-note">A mix of product systems, game feel, and visual worlds, framed as concise case studies without losing the art direction.</p>
     <div class="projects-layout">
 
       <div class="proj" id="proj-dream">
@@ -311,6 +332,7 @@ footer{padding:1.5rem 2.5rem;text-align:center;border-top:1px solid rgba(255,255
           <div class="proj-info">
             <h3>Dream Raiders 2</h3>
             <p>Built real-time UI VFX in Unity — HUD cues, damage/heal feedback, menu & combat prompts. Designed character skill VFX using Particle System, VFX Graph and Shader Graph.</p>
+            <div class="proj-case-meta"><div><span>Role</span><strong>UI VFX Artist</strong></div><div><span>Challenge</span><strong>Readable combat feedback</strong></div><div><span>Outcome</span><strong>Shipped Unity effects</strong></div></div>
             <div class="proj-tags"><span>Unity</span><span>VFX Graph</span><span>Shader Graph</span><span>Particle System</span><span>Texture Atlasing</span></div>
             <a href="https://apps.apple.com/ph/app/dream-raiders-2-wilds/id6743147434" class="proj-link" target="_blank">View Project →</a>
           </div>
@@ -326,6 +348,7 @@ footer{padding:1.5rem 2.5rem;text-align:center;border-top:1px solid rgba(255,255
           <div class="proj-info">
             <h3>Freestyle Exile</h3>
             <p>Lead concept 2D & 3D artist for an award-winning game. Designed concept art for environments, props, and characters. Won Excellence in Design at RPI GameFest '23.</p>
+            <div class="proj-case-meta"><div><span>Role</span><strong>Lead 2D / 3D Artist</strong></div><div><span>Challenge</span><strong>Cohesive game world</strong></div><div><span>Outcome</span><strong>Excellence in Design</strong></div></div>
             <div class="proj-tags"><span>Game Design</span><span>Concept Art</span><span>3D Modeling</span><span>Texturing</span><span>UV Unwrap</span></div>
             <a href="https://freestyle-exile.carrd.co/" class="proj-link" target="_blank">View Project →</a>
           </div>
@@ -350,6 +373,7 @@ footer{padding:1.5rem 2.5rem;text-align:center;border-top:1px solid rgba(255,255
           <div class="proj-info">
             <h3>Calligraphy × 3D</h3>
             <p>Combined traditional Chinese calligraphy with 3D animation at Collar Works gallery. Used Blender and Houdini to create ink painting shaders and textures.</p>
+            <div class="proj-case-meta"><div><span>Role</span><strong>3D / VFX Artist</strong></div><div><span>Challenge</span><strong>Calligraphy as space</strong></div><div><span>Outcome</span><strong>Gallery exhibition</strong></div></div>
             <div class="proj-tags"><span>Blender</span><span>Houdini</span><span>Shader Dev</span><span>Installation Art</span></div>
             <a href="https://tobytang.artstation.com/projects/RKnA2y" class="proj-link" target="_blank">View Project →</a>
           </div>
@@ -365,6 +389,7 @@ footer{padding:1.5rem 2.5rem;text-align:center;border-top:1px solid rgba(255,255
           <div class="proj-info">
             <h3>AI Business Simulator</h3>
             <p>Multi-agent business case simulation platform for first-year business students. A CEO Agent moderates mission-based inquiry — students interview role-specific agents (CFO, marketing, ops lead) to gather evidence and build recommendations, transforming passive case reading into active business decision-making.</p>
+            <div class="proj-case-meta"><div><span>Role</span><strong>Product Design / Front-end</strong></div><div><span>Challenge</span><strong>Active case learning</strong></div><div><span>Outcome</span><strong>Live AI prototype</strong></div></div>
             <div class="proj-tags"><span>Gemma</span><span>Multi-Agent LLM</span><span>React</span><span>FastAPI</span><span>EdTech</span><span>UX Design</span></div>
             <div style="display:flex;gap:1rem;flex-wrap:wrap">
               <a href="https://www.kaggle.com/competitions/gemma-4-good-hackathon/writeups/ai-business-simulator" class="proj-link" target="_blank">View Writeup →</a>
