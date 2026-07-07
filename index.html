@@ -33,8 +33,6 @@ nav.hide{transform:translateY(-100%)}
 .hero{min-height:100vh;position:relative;overflow:hidden;display:flex;align-items:flex-end;padding:0 2.5rem 4rem}
 .hero-video{position:absolute;inset:0;z-index:0;width:100%;height:100%;object-fit:cover}
 .hero-overlay{position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(12,20,69,0) 0%,rgba(12,20,69,0) 40%,rgba(12,20,69,.35) 60%,rgba(12,20,69,.7) 78%,var(--navy) 100%)}
-.hero-vfx{position:absolute;top:8vh;right:-5vw;width:min(58vw,820px);height:min(78vh,760px);z-index:3;pointer-events:none;opacity:.72;mix-blend-mode:screen;filter:drop-shadow(0 0 28px rgba(0,212,255,.14));-webkit-mask-image:radial-gradient(ellipse 72% 60% at 55% 45%,#000 42%,rgba(0,0,0,.72) 68%,transparent 100%);mask-image:radial-gradient(ellipse 72% 60% at 55% 45%,#000 42%,rgba(0,0,0,.72) 68%,transparent 100%)}
-.hero-vfx-aura{position:absolute;right:-12vw;top:12vh;width:min(56vw,780px);height:min(60vh,620px);z-index:2;pointer-events:none;background:radial-gradient(ellipse 52% 40% at 52% 45%,rgba(0,212,255,.13),transparent 62%),radial-gradient(ellipse 36% 34% at 64% 52%,rgba(192,132,252,.1),transparent 68%),radial-gradient(ellipse 34% 28% at 42% 58%,rgba(255,107,127,.075),transparent 70%);filter:blur(8px);mix-blend-mode:screen;opacity:.72}
 .hero-content{position:relative;z-index:10;max-width:800px;padding-bottom:2rem}
 .hero-tag{font-family:var(--font-mono);font-size:.7rem;color:var(--pool);letter-spacing:.35em;text-transform:uppercase;margin-bottom:1.2rem;text-shadow:0 0 10px rgba(0,212,255,.5);opacity:0;animation:fadeIn .8s .3s forwards}
 .hero h1{font-family:var(--font-display);font-size:clamp(3rem,8vw,6.5rem);font-weight:900;line-height:.95;margin-bottom:1.2rem;opacity:0;animation:fadeIn .8s .5s forwards}
@@ -63,6 +61,8 @@ nav.hide{transform:translateY(-100%)}
 .about-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1.3fr;gap:4rem;align-items:start}
 .expertise-merged{max-width:1180px;margin:5rem auto 0;padding-top:4rem;border-top:1px solid rgba(255,255,255,.07);position:relative;z-index:1}
 .expertise-merged::before{content:'';position:absolute;left:50%;top:0;width:100vw;height:calc(100% + 6rem);transform:translateX(-50%);z-index:-1;background:linear-gradient(180deg,rgba(19,26,74,.78) 0%,rgba(11,24,65,.72) 100%);border-top:1px solid rgba(255,245,235,.055);box-shadow:inset 0 44px 90px rgba(0,0,0,.13)}
+.expertise-vfx{position:absolute;left:50%;top:0;width:100vw;height:100%;min-height:430px;transform:translateX(-50%);z-index:0;pointer-events:none;opacity:.24;mix-blend-mode:screen;-webkit-mask-image:linear-gradient(180deg,transparent 0%,#000 18%,#000 82%,transparent 100%);mask-image:linear-gradient(180deg,transparent 0%,#000 18%,#000 82%,transparent 100%)}
+.expertise-merged>.stag,.expertise-merged>.stitle,.expertise-cards{position:relative;z-index:1}
 .about-card{background:linear-gradient(135deg,#1e3a8a,#312e81);border-radius:20px;padding:2.5rem;border:1px solid rgba(0,212,255,.1);position:relative;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.3);text-align:center;transition:transform .45s cubic-bezier(.25,.46,.45,.94),box-shadow .45s}
 .about-card:hover{transform:translateY(-6px) scale(1.015);box-shadow:0 30px 80px rgba(0,0,0,.4),0 0 40px rgba(0,212,255,.08)}
 .about-card::before{content:'';position:absolute;top:-50%;right:-50%;width:200%;height:200%;background:radial-gradient(circle at 30% 30%,rgba(0,212,255,.08),transparent 50%)}
@@ -234,8 +234,7 @@ nav.hide{transform:translateY(-100%)}
 footer{padding:1.5rem 2.5rem;text-align:center;border-top:1px solid rgba(255,255,255,.04);font-size:.7rem;color:rgba(255,245,235,.25);letter-spacing:.08em;background:var(--navy)}
 /* classes cleaned up */
 @media(max-width:900px){
-  .hero-vfx{right:-24vw;width:92vw;height:62vh;opacity:.36}
-  .hero-vfx-aura{right:-34vw;width:90vw;opacity:.42}
+  .expertise-vfx{opacity:.16;min-height:360px}
   .about-inner{grid-template-columns:1fr;gap:2.5rem}
   .expertise-cards{grid-template-columns:repeat(2,1fr)}
   .exp-card-product{grid-column:1/-1;min-height:320px}
@@ -255,7 +254,7 @@ footer{padding:1.5rem 2.5rem;text-align:center;border-top:1px solid rgba(255,255
   .edu-card{grid-template-columns:1fr}.edu-icon,.edu-logo{display:none}
 }
 @media(max-width:600px){
-  .hero-vfx,.hero-vfx-aura{display:none}
+  .expertise-vfx{display:none}
   .hero h1{font-size:clamp(2.5rem,12vw,4rem)}
   .expertise-cards{grid-template-columns:1fr}
   .exp-card-product{grid-column:auto;min-height:auto;padding:1.7rem}
@@ -292,8 +291,6 @@ footer{padding:1.5rem 2.5rem;text-align:center;border-top:1px solid rgba(255,255
     <source src="hero-bg.mp4" type="video/mp4">
   </video>
   <div class="hero-overlay"></div>
-  <div class="hero-vfx-aura"></div>
-  <canvas class="hero-vfx" id="heroVfx" aria-hidden="true"></canvas>
   <div class="hero-content">
     <div class="hero-tag">Creative Multidisciplinarian ✦</div>
     <h1><span class="line">Crafting</span><span class="line"><span class="accent">Dreams</span> Into</span><span class="line">Experiences.</span></h1>
@@ -324,6 +321,7 @@ footer{padding:1.5rem 2.5rem;text-align:center;border-top:1px solid rgba(255,255
     </div>
   </div>
   <div class="expertise-merged" id="expertise">
+    <canvas class="expertise-vfx" id="expertiseVfx" aria-hidden="true"></canvas>
     <div class="stag">✦ What I Do</div><h2 class="stitle">Core Expertise</h2>
     <div class="expertise-cards">
       <div class="exp-card exp-card-product"><div class="product-card-top"><div class="exp-card-icon icon-product">PD</div><span class="product-kicker">Primary Focus</span></div><h3>Product Design</h3><p>I design the product layer and build the front end behind it: flows, interaction models, design systems, and polished interfaces that can move from Figma into production.</p><div class="product-proof"><span>Product Thinking</span><span>Figma to React</span><span>Ship-ready UI</span></div></div>
@@ -511,21 +509,21 @@ menuBtn.addEventListener('click',function(){navLinks.classList.toggle('open');me
   requestAnimationFrame(rotateGlow);
 })();
 
-// Hero lightweight VFX field
+// Core expertise ambient VFX field
 (function(){
-  var canvas=document.getElementById('heroVfx');
+  var canvas=document.getElementById('expertiseVfx');
   if(!canvas)return;
   var ctx=canvas.getContext('2d');
   if(!ctx)return;
   var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var dpr=1,w=0,h=0,cx=0,cy=0,particles=[],mouse={x:0,y:0};
+  var dpr=1,w=0,h=0,particles=[];
   var palette=[
     [0,212,255],
     [94,234,212],
     [192,132,252],
     [255,107,127]
   ];
-  function resizeHeroVfx(){
+  function resizeExpertiseVfx(){
     var rect=canvas.getBoundingClientRect();
     dpr=Math.min(window.devicePixelRatio||1,1.7);
     w=Math.max(1,rect.width);
@@ -533,85 +531,58 @@ menuBtn.addEventListener('click',function(){navLinks.classList.toggle('open');me
     canvas.width=Math.floor(w*dpr);
     canvas.height=Math.floor(h*dpr);
     ctx.setTransform(dpr,0,0,dpr,0,0);
-    cx=w*.52;cy=h*.5;
     seedParticles();
   }
   function seedParticles(){
-    var count=Math.floor(Math.min(118,Math.max(62,w/7)));
+    var count=Math.floor(Math.min(48,Math.max(26,w/28)));
     particles=[];
     for(var i=0;i<count;i++){
-      var band=i%5;
-      var a=(i/count)*Math.PI*2;
       particles.push({
-        a:a,
-        r:72+band*34+Math.random()*70,
-        s:.0018+Math.random()*.0032,
+        x:Math.random()*w,
+        y:h*(.16+Math.random()*.68),
+        r:18+Math.random()*56,
+        s:.00032+Math.random()*.00048,
+        drift:.18+Math.random()*.42,
         p:Math.random()*Math.PI*2,
-        z:.45+Math.random()*.9,
+        z:.35+Math.random()*.65,
         c:palette[i%palette.length]
       });
     }
   }
-  function drawHeroVfx(t){
+  function drawExpertiseVfx(t){
     t*=.001;
     ctx.clearRect(0,0,w,h);
     ctx.globalCompositeOperation='lighter';
-    var driftX=mouse.x*18,driftY=mouse.y*14;
-    var coreX=cx+Math.sin(t*.28)*18+driftX;
-    var coreY=cy+Math.cos(t*.21)*14+driftY;
-    var glow=ctx.createRadialGradient(coreX,coreY,0,coreX,coreY,Math.max(w,h)*.42);
-    glow.addColorStop(0,'rgba(0,212,255,.12)');
-    glow.addColorStop(.38,'rgba(192,132,252,.055)');
-    glow.addColorStop(1,'rgba(0,0,0,0)');
-    ctx.fillStyle=glow;
+    var wash=ctx.createLinearGradient(0,0,w,h);
+    wash.addColorStop(0,'rgba(0,212,255,.015)');
+    wash.addColorStop(.55,'rgba(192,132,252,.018)');
+    wash.addColorStop(1,'rgba(255,107,127,.012)');
+    ctx.fillStyle=wash;
     ctx.fillRect(0,0,w,h);
-    for(var ring=0;ring<5;ring++){
-      ctx.beginPath();
-      for(var j=0;j<170;j++){
-        var u=j/169*Math.PI*2;
-        var pulse=Math.sin(u*3+t*(.55+ring*.11)+ring)*14;
-        var rx=118+ring*38+pulse;
-        var ry=54+ring*26+Math.cos(u*2-t*.42)*10;
-        var x=coreX+Math.cos(u+t*.13*(ring+1))*rx;
-        var y=coreY+Math.sin(u+t*.1*(ring+1))*ry;
-        if(j===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
-      }
-      var rc=palette[ring%palette.length];
-      ctx.closePath();
-      ctx.strokeStyle='rgba('+rc[0]+','+rc[1]+','+rc[2]+','+(.035+ring*.012)+')';
-      ctx.lineWidth=1;
-      ctx.stroke();
-    }
     for(var i=0;i<particles.length;i++){
       var p=particles[i];
-      var wave=Math.sin(t*.9+p.p)*18+Math.cos(t*.53+p.a*2)*12;
-      var angle=p.a+t*p.s*220*p.z;
-      var x=coreX+Math.cos(angle)*(p.r+wave)*1.18;
-      var y=coreY+Math.sin(angle*1.28)*(p.r*.58+wave*.35);
-      var size=(1.2+p.z*1.8)*(1+Math.sin(t*1.4+p.p)*.22);
+      var x=(p.x+t*p.drift*18)%w;
+      var y=p.y+Math.sin(t*.16+p.p)*p.r*.22+Math.cos(t*.11+p.p)*p.r*.1;
+      var size=(.9+p.z*1.6)*(1+Math.sin(t*.22+p.p)*.12);
       ctx.beginPath();
-      ctx.fillStyle='rgba('+p.c[0]+','+p.c[1]+','+p.c[2]+','+(.28+p.z*.18)+')';
+      ctx.fillStyle='rgba('+p.c[0]+','+p.c[1]+','+p.c[2]+','+(.12+p.z*.13)+')';
       ctx.arc(x,y,size,0,Math.PI*2);
       ctx.fill();
-      if(i%3===0){
+      if(i%4===0){
         ctx.beginPath();
-        ctx.strokeStyle='rgba('+p.c[0]+','+p.c[1]+','+p.c[2]+',.08)';
-        ctx.lineWidth=.8;
-        ctx.moveTo(x,y);
-        ctx.lineTo(coreX+(x-coreX)*.72,coreY+(y-coreY)*.72);
+        ctx.strokeStyle='rgba('+p.c[0]+','+p.c[1]+','+p.c[2]+',.035)';
+        ctx.lineWidth=.65;
+        ctx.moveTo(x-p.r*.9,y+Math.sin(t*.12+p.p)*8);
+        ctx.quadraticCurveTo(x,y-p.r*.22,x+p.r*1.15,y+Math.cos(t*.1+p.p)*10);
         ctx.stroke();
       }
     }
     ctx.globalCompositeOperation='source-over';
-    if(!reduce)requestAnimationFrame(drawHeroVfx);
+    if(!reduce)requestAnimationFrame(drawExpertiseVfx);
   }
-  window.addEventListener('resize',resizeHeroVfx);
-  window.addEventListener('mousemove',function(e){
-    mouse.x=(e.clientX/window.innerWidth-.5);
-    mouse.y=(e.clientY/window.innerHeight-.5);
-  },{passive:true});
-  resizeHeroVfx();
-  requestAnimationFrame(drawHeroVfx);
+  window.addEventListener('resize',resizeExpertiseVfx);
+  resizeExpertiseVfx();
+  requestAnimationFrame(drawExpertiseVfx);
 })();
 
 // Smooth scroll with nav offset
