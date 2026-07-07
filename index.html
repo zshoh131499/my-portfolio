@@ -11,6 +11,7 @@
   --pool:#00d4ff;--coral:#ff6b7f;--sunset-purple:#c084fc;--mint:#5eead4;
   --navy:#0c1445;--cream:#fff5eb;--white:#fff;
   --surface-0:#0c1445;--surface-1:#10184a;--surface-2:#0a1742;--surface-3:#121b50;--surface-4:#0a1030;
+  --text-aa:#b8bdd4;--text-soft:#c8cce0;--text-muted:#a5acc8;
   --font-display:'Anybody',sans-serif;--font-body:'Outfit',sans-serif;--font-mono:'Space Mono',monospace;
 }
 html{scroll-behavior:smooth;overflow-x:hidden;scroll-padding-top:80px}
@@ -186,40 +187,40 @@ nav.hide{transform:translateY(-100%)}
 .exp-inner{max-width:800px;margin:0 auto}
 .timeline{position:relative;padding-left:2.5rem;margin-top:2.5rem}
 .timeline::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--pool),var(--sunset-purple),var(--coral),transparent)}
-.tl-item{position:relative;padding-bottom:2.8rem;opacity:.3;transform:translateX(-12px);transition:opacity .5s ease,transform .5s ease;will-change:opacity,transform}
+.tl-item{position:relative;padding-bottom:2.8rem;opacity:.82;transform:translateX(-12px);transition:opacity .5s ease,transform .5s ease;will-change:opacity,transform}
 .tl-item.active{opacity:1;transform:translateX(0)}
 .tl-item::before{content:'';position:absolute;left:-2.5rem;top:.4rem;width:12px;height:12px;border-radius:50%;border:2px solid var(--pool);background:var(--navy);transform:translateX(-5px);box-shadow:0 0 8px rgba(0,212,255,.2);transition:background .4s,box-shadow .4s}
 .tl-item.active::before{box-shadow:0 0 18px rgba(0,212,255,.6);background:var(--pool)}
 .tl-date{font-family:var(--font-mono);font-size:.68rem;color:var(--pool);letter-spacing:.12em;margin-bottom:.4rem}
 .tl-item h3{font-family:var(--font-display);font-size:1.15rem;font-weight:700;margin-bottom:.2rem;transition:font-size .4s ease,color .4s ease}
 .tl-item.active h3{font-size:1.45rem;color:var(--white)}
-.tl-item h4{color:rgba(255,245,235,.45);font-size:.88rem;font-weight:400;margin-bottom:.6rem;transition:color .4s}
-.tl-item.active h4{color:rgba(255,245,235,.65)}
+.tl-item h4{color:var(--text-muted);font-size:.88rem;font-weight:400;margin-bottom:.6rem;transition:color .4s}
+.tl-item.active h4{color:var(--text-soft)}
 .tl-head{display:flex;align-items:center;gap:12px;margin-bottom:.2rem}
 .tl-logo{width:56px;height:56px;border-radius:50%;object-fit:cover;object-position:center;flex-shrink:0;background:transparent;padding:0;display:block}
 .tl-head h3{margin-bottom:0 !important}
 .tl-item ul{list-style:none;padding:0}
-.tl-item ul li{color:rgba(255,245,235,.35);font-size:.83rem;line-height:1.7;padding-left:1em;position:relative;margin-bottom:.3rem;transition:color .4s,opacity .4s;opacity:.5}
-.tl-item.active ul li{color:rgba(255,245,235,.55);opacity:1}
+.tl-item ul li{color:var(--text-aa);font-size:.83rem;line-height:1.7;padding-left:1em;position:relative;margin-bottom:.3rem;transition:color .4s,opacity .4s;opacity:.88}
+.tl-item.active ul li{color:var(--text-soft);opacity:1}
 .tl-item ul li::before{content:'›';position:absolute;left:0;color:var(--pool);font-weight:700}
 
 .education-section{position:relative;overflow:hidden;padding:7rem 2.5rem;background:linear-gradient(180deg,var(--surface-3) 0%,#0d1645 50%,var(--surface-0) 100%)}
 .education-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 45% 34% at 14% 16%,rgba(255,107,127,.035),transparent 66%),radial-gradient(ellipse 42% 38% at 86% 70%,rgba(94,234,212,.032),transparent 66%);pointer-events:none}
 .edu-inner{max-width:800px;margin:0 auto}
 .edu-cards{display:grid;gap:1.5rem;margin-top:2.5rem}
-.edu-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);border-radius:16px;padding:2rem;display:grid;grid-template-columns:auto 1fr;gap:1.5rem;align-items:start;transition:all .3s}
+.edu-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:2rem;display:grid;grid-template-columns:auto 1fr;gap:1.5rem;align-items:start;transition:all .3s}
 .edu-card:hover{border-color:rgba(0,212,255,.1);box-shadow:0 10px 30px rgba(0,0,0,.2)}
 .edu-logo{width:50px;height:50px;border-radius:12px;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.06)}
 .edu-logo img{width:40px;height:40px;object-fit:contain}
 .edu-info h3{font-family:var(--font-display);font-size:1.1rem;font-weight:700;margin-bottom:.2rem}
 .edu-info h4{color:var(--pool);font-size:.82rem;font-weight:500;margin-bottom:.15rem}
-.edu-info .edu-date{font-family:var(--font-mono);font-size:.65rem;color:rgba(255,245,235,.4);letter-spacing:.1em;margin-bottom:.5rem}
-.edu-info .edu-gpa{font-size:.8rem;color:rgba(255,245,235,.5);margin-bottom:.4rem}
-.edu-info .edu-courses{font-size:.78rem;color:rgba(255,245,235,.38);line-height:1.6}
+.edu-info .edu-date{font-family:var(--font-mono);font-size:.65rem;color:var(--text-muted);letter-spacing:.1em;margin-bottom:.5rem}
+.edu-info .edu-gpa{font-size:.8rem;color:var(--text-soft);margin-bottom:.4rem}
+.edu-info .edu-courses{font-size:.78rem;color:var(--text-aa);line-height:1.6}
 .exhibition-card{background:linear-gradient(135deg,rgba(192,132,252,.06),rgba(255,107,127,.04));border:1px solid rgba(192,132,252,.1);border-radius:16px;padding:2rem;margin-top:2.5rem}
 .exhibition-card h3{font-family:var(--font-display);font-size:1.1rem;font-weight:700;margin-bottom:.3rem}
 .exhibition-card h4{color:var(--sunset-purple);font-size:.82rem;font-weight:500;margin-bottom:.4rem}
-.exhibition-card p{color:rgba(255,245,235,.45);font-size:.83rem;line-height:1.7}
+.exhibition-card p{color:var(--text-aa);font-size:.83rem;line-height:1.7}
 
 .contact-section{padding:8rem 2.5rem 5rem;text-align:center;position:relative;overflow:hidden;background:linear-gradient(180deg,var(--surface-0) 0%,#0b123a 45%,var(--surface-4) 100%)}
 .contact-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 50% 40% at 30% 60%,rgba(0,212,255,.07),transparent),radial-gradient(ellipse 40% 50% at 70% 40%,rgba(192,132,252,.055),transparent),linear-gradient(90deg,rgba(255,245,235,.025),transparent 18%,transparent 82%,rgba(255,245,235,.02))}
