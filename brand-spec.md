@@ -24,7 +24,7 @@ The portfolio presents Toby as a multidisciplinary product designer who turns pa
 
 ## Motion language
 
-- Hero: particles move from an open field into Product, UX, Game, and VFX formations. Scrolling contracts the field into a single handoff point above the featured project.
+- Hero: a quiet, mist-like particle current drifts through loose Product, UX, Game, and VFX formations. Modes morph slowly without visible geometry guides; pointer and touch create a soft current rather than a hard collision. Scrolling gathers the field into a broad, staggered handoff above the featured project.
 - Expertise: Product uses a grid, UX uses connected nodes, Game uses trajectories, and VFX uses energy ripples.
 - Projects: AI uses agent nodes, Game uses sparks, VFX uses a shockwave, and Calligraphy × 3D uses ink diffusion.
 - Effects are short, input-driven, and idle at zero animation frames. Mouse, touch, and keyboard focus receive equivalent responses.
@@ -35,4 +35,5 @@ The portfolio presents Toby as a multidisciplinary product designer who turns pa
 - Never place decorative effects above readable copy or project labels.
 - Keep project screenshots visually dominant.
 - Avoid adding new glow, pill, or looping-animation styles unless they replace an existing one.
+- Keep Hero particles low-contrast and organic: no permanent grids, straight connection networks, synchronized pulsing, or tightly collapsed landing points.
 - Maintain a 44 px target for interactive controls and a visible focus indicator.

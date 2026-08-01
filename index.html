@@ -355,7 +355,7 @@ body::before{opacity:.018;background-size:5px 5px}
 .contact-email:hover,.contact-email:focus-visible{text-shadow:0 0 24px rgba(0,212,255,.28)}
 
 /* P2 interaction system */
-.hero-particle-field{position:absolute;inset:0;width:100%;height:100%;z-index:2;pointer-events:none;opacity:.82;mix-blend-mode:screen;-webkit-mask-image:linear-gradient(180deg,rgba(0,0,0,.2),#000 28%,#000 94%,transparent);mask-image:linear-gradient(180deg,rgba(0,0,0,.2),#000 28%,#000 94%,transparent)}
+.hero-particle-field{position:absolute;inset:0;width:100%;height:100%;z-index:2;pointer-events:none;opacity:.56;mix-blend-mode:screen;-webkit-mask-image:linear-gradient(180deg,rgba(0,0,0,.14),#000 30%,#000 92%,transparent);mask-image:linear-gradient(180deg,rgba(0,0,0,.14),#000 30%,#000 92%,transparent)}
 .hero-motion-caption{position:absolute;right:2.5rem;bottom:2.3rem;z-index:10;display:flex;align-items:center;gap:.65rem;font-family:var(--font-mono);font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,245,235,.48)}
 .hero-motion-caption span{display:block;width:34px;height:1px;background:linear-gradient(90deg,transparent,var(--pool));transform-origin:right;transition:transform var(--motion-base) var(--ease-out)}
 .hero:focus-within .hero-motion-caption span{transform:scaleX(1.7)}
@@ -363,9 +363,9 @@ body::before{opacity:.018;background-size:5px 5px}
 .hero-motion-toggle:hover,.hero-motion-toggle:focus-visible{border-color:rgba(0,212,255,.45);color:var(--cream);background:rgba(7,14,43,.8)}
 .hero-motion-toggle[aria-pressed="true"]{color:var(--mint);border-color:rgba(94,234,212,.35)}
 .hero-motion-toggle:disabled{cursor:default;opacity:.72}
-.particle-bridge{--bridge-energy:0;--bridge-length:340px;position:absolute;top:-54px;right:clamp(2rem,18vw,16rem);width:54px;height:calc(var(--bridge-length) + 20px);z-index:3;pointer-events:none;opacity:calc(.12 + var(--bridge-energy) * .88)}
-.particle-bridge::before{content:'';position:absolute;left:26px;top:0;width:1px;height:var(--bridge-length);background:linear-gradient(180deg,rgba(0,212,255,0),rgba(0,212,255,.75));transform-origin:top;transform:scaleY(var(--bridge-energy))}
-.particle-bridge span{position:absolute;left:22px;top:calc(var(--bridge-length) - 4px);width:9px;height:9px;border:1px solid rgba(94,234,212,.78);border-radius:50%;background:rgba(7,14,43,.88);box-shadow:0 0 calc(6px + 12px * var(--bridge-energy)) rgba(0,212,255,.38);transform:scale(calc(.65 + .35 * var(--bridge-energy)))}
+.particle-bridge{--bridge-energy:0;--bridge-length:340px;position:absolute;top:-54px;right:clamp(2rem,18vw,16rem);width:54px;height:calc(var(--bridge-length) + 20px);z-index:3;pointer-events:none;opacity:calc(.03 + var(--bridge-energy) * .42)}
+.particle-bridge::before{content:'';position:absolute;left:18px;top:0;width:18px;height:var(--bridge-length);border-radius:50%;background:linear-gradient(180deg,rgba(0,212,255,0),rgba(0,212,255,.08) 48%,rgba(94,234,212,.44));filter:blur(7px);transform-origin:top;transform:scaleY(var(--bridge-energy))}
+.particle-bridge span{position:absolute;left:24px;top:calc(var(--bridge-length) - 2px);width:6px;height:6px;border:0;border-radius:50%;background:rgba(94,234,212,.7);box-shadow:0 0 calc(8px + 10px * var(--bridge-energy)) rgba(0,212,255,.28);transform:scale(calc(.55 + .45 * var(--bridge-energy)))}
 .exp-card[data-expertise-mode]{outline-offset:5px}
 .exp-card[data-expertise-mode]:focus-within{border-color:rgba(0,212,255,.42);box-shadow:0 0 0 1px rgba(0,212,255,.12),var(--shadow-hover)}
 .exp-card[data-expertise-mode] .exp-card-icon{transition:transform var(--motion-base) var(--ease-out),border-color var(--motion-base),background var(--motion-base)}
@@ -378,24 +378,24 @@ body::before{opacity:.018;background-size:5px 5px}
 .project-fx{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none;mix-blend-mode:screen;opacity:.92}
 .project-fx.fx-ink{mix-blend-mode:multiply;opacity:.86}
 .proj:focus-within{border-color:rgba(255,245,235,.19)}
-#proj-bizsim{--flow-arrival:0;box-shadow:var(--shadow-card),0 0 calc(8px + var(--flow-arrival) * 34px) rgba(0,212,255,calc(var(--flow-arrival) * .22))}
+#proj-bizsim{--flow-arrival:0;box-shadow:var(--shadow-card),0 0 calc(6px + var(--flow-arrival) * 28px) rgba(0,212,255,calc(var(--flow-arrival) * .12))}
 #proj-bizsim .proj-label{z-index:2}
 @media(max-width:900px){
   .hero-motion-caption{right:1.5rem;bottom:1.5rem}
   .hero-motion-toggle{right:1.5rem;bottom:3.5rem}
-  .hero-particle-field{opacity:.68}
+  .hero-particle-field{opacity:.48}
   .particle-bridge{--bridge-length:310px;right:2.5rem}
 }
 @media(max-width:600px){
   .hero-motion-caption{display:none}
   .hero-motion-toggle{right:max(1.25rem,env(safe-area-inset-right));top:5rem;bottom:auto;background:rgba(7,14,43,.68)}
-  .hero-particle-field{opacity:.56}
+  .hero-particle-field{opacity:.42}
   .particle-bridge{--bridge-length:270px;right:1.7rem}
   .expertise-vfx{display:block;opacity:.16;min-height:520px}
   .exp-card-product h3{white-space:normal;overflow-wrap:anywhere}
 }
 @media(prefers-reduced-motion:reduce){
-  .hero-particle-field,.project-fx{opacity:.28}
+  .hero-particle-field,.project-fx{opacity:.24}
   .particle-bridge{--bridge-energy:.5!important}
 }
 @media(max-width:900px){
@@ -444,7 +444,7 @@ body::before{opacity:.018;background-size:5px 5px}
   <div class="hero-content">
     <div class="hero-tag">Creative Multidisciplinarian ✦</div>
     <h1><span class="line">Crafting</span><span class="line"><span class="accent">Dreams</span> Into</span><span class="line">Experiences.</span></h1>
-    <p class="sr-only" id="heroFlowHelp">Choose a discipline to reshape the decorative particle field.</p>
+    <p class="sr-only" id="heroFlowHelp">Choose a discipline to gently reshape the decorative particle current.</p>
     <div class="hero-roles" role="group" aria-label="Explore design disciplines" aria-describedby="heroFlowHelp"><button class="role-pill role-product" type="button" data-flow-mode="product" aria-pressed="true">✦ Product Designer</button><button class="role-pill role-ux" type="button" data-flow-mode="ux" aria-pressed="false">◎ UI/UX Designer</button><button class="role-pill role-game" type="button" data-flow-mode="game" aria-pressed="false">◆ Game Designer</button><button class="role-pill role-vfx" type="button" data-flow-mode="vfx" aria-pressed="false">✦ VFX Artist</button></div>
     <p class="hero-desc">Blending user-centered design with visual artistry to craft immersive, unforgettable digital worlds.</p>
     <div class="hero-cta"><a href="#projects" class="btn btn-primary">View My Work ↓</a><a href="#contact" class="btn btn-ghost">Get in Touch</a></div>

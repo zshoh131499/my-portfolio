@@ -128,8 +128,12 @@
     var particles=[];
     var selectedMode='product';
     var previewMode=null;
-    var pointer={active:false,x:0,y:0};
-    var focusPoint={active:false,x:0,y:0};
+    var modeFrom='product';
+    var modeTo='product';
+    var modeStarted=0;
+    var modeDuration=1050;
+    var pointer={active:false,x:0,y:0,targetX:0,targetY:0,influence:0};
+    var focusPoint={active:false,x:0,y:0,influence:0};
     var ripple=null;
     var contract=0;
     var landingAnchor={x:0,y:0};
@@ -140,13 +144,13 @@
     var lastTime=0;
     var lastMobileFrame=0;
     var lowQuality=false;
-    var colors=['#00d4ff','#5eead4','#fff5eb','#c084fc','#ff6b7f'];
+    var colors=['#fff5eb','#00d4ff','#fff5eb','#5eead4','#fff5eb','#00d4ff','#c084fc'];
 
     function chooseParticleCount(){
       lowQuality=window.innerWidth<650||saveData||(navigator.hardwareConcurrency&&navigator.hardwareConcurrency<=4);
       if(lowQuality)return 30;
-      if(window.innerWidth<1000)return 52;
-      return 80;
+      if(window.innerWidth<1000)return 54;
+      return 88;
     }
 
     function resetParticles(count){
@@ -155,7 +159,19 @@
       for(var i=0;i<count;i++){
         var x=metrics.width*(.42+seeded(i,1)*.56);
         var y=metrics.height*(.1+seeded(i,2)*.78);
-        particles.push({x:x,y:y,vx:0,vy:0,size:.7+seeded(i,3)*1.35,seed:seeded(i,4),color:colors[i%colors.length]});
+        particles.push({
+          x:x,
+          y:y,
+          vx:0,
+          vy:0,
+          size:.65+seeded(i,3)*1.2,
+          seed:seeded(i,4),
+          phase:seeded(i,5)*Math.PI*2,
+          driftRate:.72+seeded(i,6)*.55,
+          contractStart:seeded(i,9)*.28,
+          contractEnd:.68+seeded(i,10)*.28,
+          color:colors[i%colors.length]
+        });
       }
     }
 
@@ -172,28 +188,40 @@
     function flowPoint(mode,index,count){
       var w=metrics.width,h=metrics.height;
       var t=count>1?index/(count-1):0;
+      var scatterX=(seeded(index,11)-.5);
+      var scatterY=(seeded(index,12)-.5);
       if(mode==='ux'){
-        var uxX=w*(.49+t*.47);
-        var uxY=h*(.24+t*.5+Math.sin(t*Math.PI*3.2)*.1);
+        var uxX=w*(.5+t*.45)+scatterX*w*.025;
+        var uxY=h*(.33+t*.3+Math.sin(t*Math.PI*2.15)*.115)+scatterY*h*.1;
         return {x:uxX,y:uxY};
       }
       if(mode==='game'){
-        var angle=t*Math.PI*2;
-        var ring=index%3;
-        var radiusX=w*(.09+ring*.055);
-        var radiusY=h*(.12+ring*.06);
-        return {x:w*.76+Math.cos(angle*2+ring)*radiusX,y:h*.5+Math.sin(angle*3)*radiusY};
+        var cluster=index%3;
+        var centers=[[.66,.38],[.82,.49],[.71,.67]];
+        var clusterIndex=Math.floor(index/3);
+        var clusterCount=Math.ceil(count/3);
+        var clusterT=(clusterIndex+.5)/clusterCount;
+        var orbitAngle=clusterIndex*2.3999632297+cluster*.72+scatterX*.65;
+        var orbitRadius=Math.sqrt(clusterT);
+        return {
+          x:w*centers[cluster][0]+Math.cos(orbitAngle)*w*(.075+.035*cluster)*orbitRadius+scatterX*w*.018,
+          y:h*centers[cluster][1]+Math.sin(orbitAngle)*h*(.11+.018*cluster)*orbitRadius+scatterY*h*.025
+        };
       }
       if(mode==='vfx'){
-        var spiralAngle=t*Math.PI*5.2;
-        var spiralRadius=t*Math.min(w*.28,h*.4);
-        return {x:w*.73+Math.cos(spiralAngle)*spiralRadius,y:h*.5+Math.sin(spiralAngle)*spiralRadius*.72};
+        var spiralAngle=t*Math.PI*4.2+scatterX*.9;
+        var spiralRadius=Math.sqrt(t)*Math.min(w*.23,h*.34);
+        return {
+          x:w*.74+Math.cos(spiralAngle)*spiralRadius+Math.sin(spiralAngle*.47)*w*.018+scatterX*w*.025,
+          y:h*.5+Math.sin(spiralAngle)*spiralRadius*.72+Math.cos(spiralAngle*.38)*h*.022+scatterY*h*.035
+        };
       }
-      var columns=8;
-      var rows=Math.ceil(count/columns);
-      var column=index%columns;
-      var row=Math.floor(index/columns);
-      return {x:w*(.55+(column/Math.max(1,columns-1))*.39),y:h*(.21+(row/Math.max(1,rows-1))*.58)};
+      var cloudAngle=index*2.3999632297+scatterX*.82;
+      var cloudRadius=Math.sqrt((index+.5)/count);
+      return {
+        x:w*.76+Math.cos(cloudAngle)*w*.205*cloudRadius+Math.sin(cloudAngle*1.7)*w*.018+scatterX*w*.025,
+        y:h*.48+Math.sin(cloudAngle)*h*.285*cloudRadius+Math.cos(cloudAngle*1.3)*h*.02+scatterY*h*.035
+      };
     }
 
     function refreshLandingAnchor(){
@@ -208,7 +236,10 @@
     }
 
     function landingPoint(index){
-      return {x:landingAnchor.x+(seeded(index,8)-.5)*10,y:landingAnchor.y-(index%8)*1.15};
+      return {
+        x:landingAnchor.x+(seeded(index,8)-.5)*58,
+        y:landingAnchor.y-8-seeded(index,13)*56
+      };
     }
 
     function updateContract(force){
@@ -216,84 +247,57 @@
       scrollDirty=false;
       var rect=hero.getBoundingClientRect();
       var raw=clamp(-rect.top/Math.max(1,rect.height*.82),0,1);
-      var nextContract=smoothstep(.24,.94,raw);
+      var nextContract=smoothstep(.12,.96,raw);
       if(!force&&Math.abs(nextContract-contract)<.002)return;
       contract=nextContract;
       if(bridge)bridge.style.setProperty('--bridge-energy',contract.toFixed(3));
       if(featured)featured.style.setProperty('--flow-arrival',contract.toFixed(3));
     }
 
+    function smootherstep(value){
+      var t=clamp(value,0,1);
+      return t*t*t*(t*(t*6-15)+10);
+    }
+
+    function setFlowMode(mode){
+      if(!mode||mode===modeTo)return;
+      modeFrom=modeTo;
+      modeTo=mode;
+      modeStarted=performance.now();
+      schedule();
+    }
+
     function desiredPoint(particle,index,time){
-      var mode=previewMode||selectedMode;
-      var formation=flowPoint(mode,index,particles.length);
+      var modeMix=modeFrom===modeTo?1:smootherstep((time-modeStarted)/modeDuration);
+      if(modeMix>=1)modeFrom=modeTo;
+      var fromPoint=flowPoint(modeFrom,index,particles.length);
+      var toPoint=modeFrom===modeTo?fromPoint:flowPoint(modeTo,index,particles.length);
+      var formation={x:lerp(fromPoint.x,toPoint.x,modeMix),y:lerp(fromPoint.y,toPoint.y,modeMix)};
       var landing=landingPoint(index);
-      var wander=(1-contract)*(3+particle.seed*5);
-      var x=lerp(formation.x,landing.x,contract)+Math.sin(time*.0007+particle.seed*18)*wander;
-      var y=lerp(formation.y,landing.y,contract)+Math.cos(time*.00055+particle.seed*12)*wander;
-      if(focusPoint.active&&contract<.6){
-        var focusBlend=.075*(1-contract);
+      var localContract=smoothstep(particle.contractStart,particle.contractEnd,contract);
+      var breath=(1-localContract)*(7+particle.seed*8);
+      var driftTime=time*.00018*particle.driftRate;
+      var x=lerp(formation.x,landing.x,localContract)+Math.sin(driftTime*3.1+particle.phase)*breath;
+      var y=lerp(formation.y,landing.y,localContract)+Math.cos(driftTime*2.35+particle.phase*.83)*breath*.72;
+      if(focusPoint.influence>.01&&contract<.6){
+        var focusBlend=.035*focusPoint.influence*(1-contract);
         x=lerp(x,focusPoint.x,focusBlend);
         y=lerp(y,focusPoint.y,focusBlend);
       }
-      return {x:x,y:y};
+      return {x:x,y:y,contract:localContract};
     }
 
-    function applyRepulsion(particle,source,radius,strength){
+    function applyCurrent(particle,source,radius,strength){
       var dx=particle.x-source.x;
       var dy=particle.y-source.y;
       var distance=Math.sqrt(dx*dx+dy*dy)||1;
       if(distance>=radius)return;
-      var force=(1-distance/radius)*strength;
-      particle.vx+=(dx/distance)*force;
-      particle.vy+=(dy/distance)*force;
-    }
-
-    function drawConnections(){
-      if(lowQuality||contract>.72)return;
-      ctx.lineWidth=.55;
-      for(var i=0;i<particles.length;i++){
-        for(var j=i+1;j<particles.length;j++){
-          var dx=particles[i].x-particles[j].x;
-          var dy=particles[i].y-particles[j].y;
-          var distance=Math.sqrt(dx*dx+dy*dy);
-          if(distance<62){
-            ctx.strokeStyle='rgba(0,212,255,'+(Math.max(0,1-distance/62)*.12*(1-contract)).toFixed(3)+')';
-            ctx.beginPath();ctx.moveTo(particles[i].x,particles[i].y);ctx.lineTo(particles[j].x,particles[j].y);ctx.stroke();
-          }
-        }
-      }
-    }
-
-    function drawModeGuide(){
-      if(contract>.78)return;
-      var mode=previewMode||selectedMode;
-      var opacity=(1-contract)*(mode==='product'?.17:.11);
-      ctx.globalAlpha=opacity;
-      ctx.lineWidth=.7;
-      ctx.strokeStyle=mode==='vfx'?'#ff6b7f':(mode==='game'?'#c084fc':(mode==='product'?'#5eead4':'#00d4ff'));
-      ctx.beginPath();
-      if(mode==='product'){
-        var columns=8;
-        var rows=Math.ceil(particles.length/columns);
-        for(var column=0;column<columns;column++){
-          var top=flowPoint('product',column,particles.length);
-          var bottom=flowPoint('product',(rows-1)*columns+column,particles.length);
-          ctx.moveTo(top.x,top.y);ctx.lineTo(bottom.x,bottom.y);
-        }
-        for(var row=0;row<rows;row++){
-          var left=flowPoint('product',row*columns,particles.length);
-          var right=flowPoint('product',row*columns+columns-1,particles.length);
-          ctx.moveTo(left.x,left.y);ctx.lineTo(right.x,right.y);
-        }
-      }else{
-        var samples=42;
-        for(var sample=0;sample<samples;sample++){
-          var point=flowPoint(mode,sample,samples);
-          if(sample===0)ctx.moveTo(point.x,point.y);else ctx.lineTo(point.x,point.y);
-        }
-      }
-      ctx.stroke();
-      ctx.globalAlpha=1;
+      var falloff=1-distance/radius;
+      var force=falloff*falloff*strength;
+      var outwardX=dx/distance;
+      var outwardY=dy/distance;
+      particle.vx+=(outwardX*.28-outwardY*.72)*force;
+      particle.vy+=(outwardY*.28+outwardX*.72)*force;
     }
 
     function render(time){
@@ -305,42 +309,49 @@
       lastTime=time;
       updateContract(false);
       ctx.clearRect(0,0,metrics.width,metrics.height);
-      var rippleAge=ripple?(time-ripple.start)/720:2;
+      var rippleAge=ripple?(time-ripple.start)/1380:2;
+
+      pointer.x+=(pointer.targetX-pointer.x)*.075*delta;
+      pointer.y+=(pointer.targetY-pointer.y)*.075*delta;
+      pointer.influence=lerp(pointer.influence,pointer.active?1:0,Math.min(1,.055*delta));
+      focusPoint.influence=lerp(focusPoint.influence,focusPoint.active?1:0,Math.min(1,.07*delta));
 
       particles.forEach(function(particle,index){
         var target=desiredPoint(particle,index,time);
-        var spring=contract>.65?.026:.014;
+        var spring=target.contract>.65?.013:.0065;
         particle.vx+=(target.x-particle.x)*spring*delta;
         particle.vy+=(target.y-particle.y)*spring*delta;
-        if(pointer.active&&contract<.88)applyRepulsion(particle,pointer,125,1.4*delta*(1-contract));
-        if(focusPoint.active&&contract<.72)applyRepulsion(particle,focusPoint,86,.5*delta);
+        if(pointer.influence>.01&&contract<.88)applyCurrent(particle,pointer,190,.42*pointer.influence*delta*(1-contract));
+        if(focusPoint.influence>.01&&contract<.72)applyCurrent(particle,focusPoint,120,.18*focusPoint.influence*delta);
         if(ripple&&rippleAge<1){
           var expanding={x:ripple.x,y:ripple.y};
           var dx=particle.x-expanding.x;
           var dy=particle.y-expanding.y;
           var distance=Math.sqrt(dx*dx+dy*dy)||1;
-          var waveRadius=30+rippleAge*180;
-          var proximity=Math.max(0,1-Math.abs(distance-waveRadius)/42);
-          particle.vx+=(dx/distance)*proximity*1.8*(1-rippleAge);
-          particle.vy+=(dy/distance)*proximity*1.8*(1-rippleAge);
+          var waveRadius=24+rippleAge*220;
+          var proximity=Math.max(0,1-Math.abs(distance-waveRadius)/76);
+          var waveStrength=Math.sin(rippleAge*Math.PI)*(1-rippleAge)*.52;
+          particle.vx+=(dx/distance)*proximity*waveStrength;
+          particle.vy+=(dy/distance)*proximity*waveStrength;
         }
-        var damping=Math.pow(contract>.72?.76:.84,delta);
+        var damping=Math.pow(target.contract>.72?.86:.91,delta);
         particle.vx*=damping;particle.vy*=damping;
+        var speed=Math.sqrt(particle.vx*particle.vx+particle.vy*particle.vy)||0;
+        if(speed>1.45){particle.vx=particle.vx/speed*1.45;particle.vy=particle.vy/speed*1.45;}
         particle.x+=particle.vx*delta;particle.y+=particle.vy*delta;
       });
 
-      drawModeGuide();
-      drawConnections();
       particles.forEach(function(particle,index){
-        var pulse=.78+Math.sin(time*.002+particle.seed*10)*.22;
-        var size=particle.size*(1+contract*.5)*pulse;
-        ctx.globalAlpha=clamp(.44+contract*.42,0,1);
+        var pulse=.94+Math.sin(time*.00085*particle.driftRate+particle.phase)*.06;
+        var size=particle.size*(1+contract*.22)*pulse;
+        if(index%4===0){
+          ctx.globalAlpha=.035*(1-contract*.45);
+          ctx.fillStyle=particle.color;
+          ctx.beginPath();ctx.arc(particle.x,particle.y,size*4.2,0,Math.PI*2);ctx.fill();
+        }
+        ctx.globalAlpha=clamp(.28+particle.seed*.22+contract*.08,0,.58);
         ctx.fillStyle=particle.color;
         ctx.beginPath();ctx.arc(particle.x,particle.y,size,0,Math.PI*2);ctx.fill();
-        if(index%13===0){
-          ctx.globalAlpha=.12*(1-contract);
-          ctx.beginPath();ctx.arc(particle.x,particle.y,size*3.4,0,Math.PI*2);ctx.strokeStyle=particle.color;ctx.stroke();
-        }
       });
       ctx.globalAlpha=1;
       if(rippleAge>=1)ripple=null;
@@ -367,9 +378,9 @@
       var count=32;
       for(var i=0;i<count;i++){
         var point=flowPoint('product',i,count);
-        ctx.globalAlpha=.45;
+        ctx.globalAlpha=.32;
         ctx.fillStyle=colors[i%colors.length];
-        ctx.beginPath();ctx.arc(point.x,point.y,1.2,0,Math.PI*2);ctx.fill();
+        ctx.beginPath();ctx.arc(point.x,point.y,.85+seeded(i,14)*.65,0,Math.PI*2);ctx.fill();
       }
       ctx.globalAlpha=1;
     }
@@ -382,7 +393,11 @@
     hero.addEventListener('pointermove',function(event){
       if(event.pointerType==='touch')return;
       var point=localPoint(event);
-      pointer.active=true;pointer.x=point.x;pointer.y=point.y;schedule();
+      pointer.active=true;
+      pointer.targetX=point.x;
+      pointer.targetY=point.y;
+      if(pointer.influence<.02){pointer.x=point.x;pointer.y=point.y;}
+      schedule();
     },{passive:true});
     hero.addEventListener('pointerleave',function(){pointer.active=false;});
     hero.addEventListener('pointerdown',function(event){
@@ -397,11 +412,11 @@
       roleButtons.forEach(function(button){button.setAttribute('aria-pressed',String(button.dataset.flowMode===mode));});
     }
     roleButtons.forEach(function(button){
-      button.addEventListener('pointerenter',function(){if(finePointerQuery.matches){previewMode=button.dataset.flowMode;schedule();}});
-      button.addEventListener('pointerleave',function(){previewMode=null;});
-      button.addEventListener('focus',function(){previewMode=button.dataset.flowMode;schedule();});
-      button.addEventListener('blur',function(){previewMode=null;});
-      button.addEventListener('click',function(){selectedMode=button.dataset.flowMode;previewMode=null;setPressed(selectedMode);schedule();});
+      button.addEventListener('pointerenter',function(){if(finePointerQuery.matches){previewMode=button.dataset.flowMode;setFlowMode(previewMode);}});
+      button.addEventListener('pointerleave',function(){previewMode=null;setFlowMode(selectedMode);});
+      button.addEventListener('focus',function(){previewMode=button.dataset.flowMode;setFlowMode(previewMode);});
+      button.addEventListener('blur',function(){previewMode=null;setFlowMode(selectedMode);});
+      button.addEventListener('click',function(){selectedMode=button.dataset.flowMode;previewMode=null;setFlowMode(selectedMode);setPressed(selectedMode);schedule();});
     });
     setPressed(selectedMode);
 
