@@ -13,6 +13,9 @@
   --surface-0:#0c1445;--surface-1:#10184a;--surface-2:#0a1742;--surface-3:#121b50;--surface-4:#0a1030;
   --text-aa:#b8bdd4;--text-soft:#c8cce0;--text-muted:#a5acc8;
   --font-display:'Anybody',sans-serif;--font-body:'Outfit',sans-serif;--font-mono:'Space Mono',monospace;
+  --motion-fast:160ms;--motion-base:260ms;--motion-slow:520ms;--ease-out:cubic-bezier(.22,1,.36,1);
+  --border-subtle:rgba(255,245,235,.08);--border-strong:rgba(255,245,235,.16);
+  --shadow-card:0 14px 38px rgba(0,0,0,.2);--shadow-hover:0 18px 48px rgba(0,0,0,.24);--glow-primary:0 0 28px rgba(0,212,255,.22);
 }
 html{scroll-behavior:smooth;overflow-x:hidden;scroll-padding-top:80px}
 body{background:var(--surface-4);color:var(--cream);font-family:var(--font-body);line-height:1.6;overflow-x:hidden}
@@ -292,6 +295,122 @@ footer{padding:1.5rem 2.5rem;text-align:center;border-top:1px solid rgba(255,255
   .tools-track{animation:none!important;transform:none!important}
   .float-shape,.about-avatar,.about-avatar::after{animation:none!important;transform:none!important}
 }
+
+/* P1 visual-system v0: quieter surfaces, stronger work hierarchy */
+body::before{opacity:.018;background-size:5px 5px}
+.nav-logo,.hero-tag,.stag,.contact-email{text-shadow:none}
+.hero h1 .accent{text-shadow:var(--glow-primary)}
+.hero-roles{gap:.7rem 1rem}
+.role-pill{appearance:none;min-height:44px;padding:.15rem 0;border-radius:0;background:transparent;box-shadow:none;letter-spacing:.1em;cursor:pointer;position:relative;touch-action:manipulation}
+.role-pill::after{content:'';position:absolute;left:0;right:0;bottom:6px;height:1px;background:currentColor;transform:scaleX(0);transform-origin:left;opacity:.66;transition:transform var(--motion-base) var(--ease-out)}
+.role-pill:hover::after,.role-pill:focus-visible::after,.role-pill[aria-pressed="true"]::after{transform:scaleX(1)}
+.role-pill[aria-pressed="true"]{color:var(--cream)}
+.role-product{color:var(--mint)}.role-ux{color:var(--pool)}.role-game{color:var(--sunset-purple)}.role-vfx{color:var(--coral)}
+.btn,.c-link{border-radius:8px;transition:transform var(--motion-base) var(--ease-out),border-color var(--motion-base),color var(--motion-base),background var(--motion-base),box-shadow var(--motion-base)}
+.btn-primary{box-shadow:0 4px 20px rgba(0,212,255,.14)}
+.btn-primary:hover{box-shadow:0 6px 28px rgba(0,212,255,.28)}
+.about-card{border-radius:12px;box-shadow:var(--shadow-card);transition:transform var(--motion-base) var(--ease-out),border-color var(--motion-base),box-shadow var(--motion-base)}
+.about-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-hover);border-color:rgba(0,212,255,.18)}
+.about-card::after{display:none}
+.about-avatar{animation:none;box-shadow:0 0 22px rgba(0,212,255,.16)}
+.about-avatar::after{display:none}
+.float-shape{animation:none;opacity:.55}
+.about-badges{gap:.55rem 1rem}
+.about-badges .badge{padding:.22rem 0;border-radius:0;background:transparent;border-bottom:1px solid currentColor;opacity:.78;transition:opacity var(--motion-fast)}
+.about-badges .badge:hover{transform:none;box-shadow:none;opacity:1}
+.expertise-vfx{opacity:.2}
+.exp-card,.proj{transition:transform var(--motion-base) var(--ease-out),border-color var(--motion-base),box-shadow var(--motion-base),background var(--motion-base)}
+.exp-card:hover,.proj:hover{transform:translateY(-2px);box-shadow:var(--shadow-hover)}
+.exp-card-product:hover{box-shadow:var(--shadow-hover)}
+.exp-card-icon{border-radius:6px}
+.exp-card:hover .exp-tags span{background:transparent;color:rgba(255,245,235,.62)}
+.exp-tags,.proj-tags{gap:.45rem .8rem}
+.exp-tags span,.proj-tags span{padding:.18rem 0;border-radius:0;background:transparent;border-bottom:1px solid rgba(255,245,235,.12);font-size:.62rem;color:rgba(255,245,235,.56)}
+.projects{padding-top:8rem;background:linear-gradient(180deg,#0b1542 0%,#0c194b 58%,var(--surface-2) 100%)}
+.projects::before{opacity:.45}
+.projects .stitle{margin-bottom:1rem}
+#proj-bizsim{order:initial;border-color:var(--border-strong);background:linear-gradient(135deg,rgba(255,245,235,.06),rgba(94,234,212,.035) 42%,rgba(255,255,255,.018));box-shadow:var(--shadow-card)}
+#proj-bizsim .proj-top{grid-template-columns:minmax(0,.88fr) minmax(0,1.2fr);min-height:520px}
+.proj-info,.proj-thumb{min-width:0}
+#proj-bizsim .proj-thumb{min-height:520px;background:#070e2b}
+#proj-bizsim .proj-thumb img{object-fit:contain;object-position:center;background:#070e2b}
+.featured-case-kicker{display:flex;justify-content:space-between;gap:1rem;margin-bottom:1.2rem;font-family:var(--font-mono);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mint)}
+.featured-case-kicker span:last-child{color:rgba(255,245,235,.4);text-align:right}
+.featured-lede{font-size:1.04rem!important;color:rgba(255,245,235,.72)!important}
+.featured-actions{display:flex;flex-wrap:wrap;gap:.6rem 1.2rem;align-items:center}
+.proj-link.featured-primary{padding:.62rem .85rem;border-radius:6px;background:var(--pool);color:var(--navy);font-weight:700}
+.proj-link.featured-primary:hover{color:var(--navy);gap:.65rem;background:var(--mint)}
+.proj-link.featured-secondary{color:rgba(255,245,235,.56)}
+.proj-label{border-radius:4px}
+.gallery-thumb.active{box-shadow:0 0 10px rgba(0,212,255,.12)}
+.tools-section{padding:2.2rem 2.5rem;background:transparent;border-top:1px solid rgba(255,255,255,.05);border-bottom:0}
+.tools-track{width:auto;max-width:1100px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:center;gap:.55rem 1.15rem;animation:none}
+.tool-chip{padding:.25rem 0;border:0;border-radius:0;background:transparent;font-family:var(--font-mono);font-size:.68rem;letter-spacing:.05em;transition:color var(--motion-fast)}
+.tl-item h3,.tl-item.active h3{font-size:1.25rem}
+.tl-item.active::before{box-shadow:0 0 12px rgba(0,212,255,.36)}
+.experience-section::before{opacity:.45}
+.experience-section .education-section{width:100%;margin:4.5rem auto 0;padding:4rem 0 0;background:transparent;border-top:1px solid var(--border-subtle)}
+.experience-section .education-section::before,.experience-section .education-section::after{display:none}
+.edu-card{border-radius:8px;transition:border-color var(--motion-base),box-shadow var(--motion-base)}
+.contact-email:hover,.contact-email:focus-visible{text-shadow:0 0 24px rgba(0,212,255,.28)}
+
+/* P2 interaction system */
+.hero-particle-field{position:absolute;inset:0;width:100%;height:100%;z-index:2;pointer-events:none;opacity:.82;mix-blend-mode:screen;-webkit-mask-image:linear-gradient(180deg,rgba(0,0,0,.2),#000 28%,#000 94%,transparent);mask-image:linear-gradient(180deg,rgba(0,0,0,.2),#000 28%,#000 94%,transparent)}
+.hero-motion-caption{position:absolute;right:2.5rem;bottom:2.3rem;z-index:10;display:flex;align-items:center;gap:.65rem;font-family:var(--font-mono);font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,245,235,.48)}
+.hero-motion-caption span{display:block;width:34px;height:1px;background:linear-gradient(90deg,transparent,var(--pool));transform-origin:right;transition:transform var(--motion-base) var(--ease-out)}
+.hero:focus-within .hero-motion-caption span{transform:scaleX(1.7)}
+.hero-motion-toggle{position:absolute;right:2.5rem;bottom:4.3rem;z-index:12;min-width:44px;min-height:44px;padding:.45rem .7rem;border:1px solid rgba(255,245,235,.14);border-radius:6px;background:rgba(7,14,43,.52);backdrop-filter:blur(10px);color:rgba(255,245,235,.62);font-family:var(--font-mono);font-size:.56rem;letter-spacing:.11em;text-transform:uppercase;cursor:pointer;transition:border-color var(--motion-fast),color var(--motion-fast),background var(--motion-fast)}
+.hero-motion-toggle:hover,.hero-motion-toggle:focus-visible{border-color:rgba(0,212,255,.45);color:var(--cream);background:rgba(7,14,43,.8)}
+.hero-motion-toggle[aria-pressed="true"]{color:var(--mint);border-color:rgba(94,234,212,.35)}
+.hero-motion-toggle:disabled{cursor:default;opacity:.72}
+.particle-bridge{--bridge-energy:0;--bridge-length:340px;position:absolute;top:-54px;right:clamp(2rem,18vw,16rem);width:54px;height:calc(var(--bridge-length) + 20px);z-index:3;pointer-events:none;opacity:calc(.12 + var(--bridge-energy) * .88)}
+.particle-bridge::before{content:'';position:absolute;left:26px;top:0;width:1px;height:var(--bridge-length);background:linear-gradient(180deg,rgba(0,212,255,0),rgba(0,212,255,.75));transform-origin:top;transform:scaleY(var(--bridge-energy))}
+.particle-bridge span{position:absolute;left:22px;top:calc(var(--bridge-length) - 4px);width:9px;height:9px;border:1px solid rgba(94,234,212,.78);border-radius:50%;background:rgba(7,14,43,.88);box-shadow:0 0 calc(6px + 12px * var(--bridge-energy)) rgba(0,212,255,.38);transform:scale(calc(.65 + .35 * var(--bridge-energy)))}
+.exp-card[data-expertise-mode]{outline-offset:5px}
+.exp-card[data-expertise-mode]:focus-within{border-color:rgba(0,212,255,.42);box-shadow:0 0 0 1px rgba(0,212,255,.12),var(--shadow-hover)}
+.exp-card[data-expertise-mode] .exp-card-icon{transition:transform var(--motion-base) var(--ease-out),border-color var(--motion-base),background var(--motion-base)}
+.exp-card[data-expertise-mode]:hover .exp-card-icon,.exp-card[data-expertise-mode]:focus-within .exp-card-icon,.exp-card.is-motion-active .exp-card-icon{transform:translateY(-2px) scale(1.04);background:rgba(255,255,255,.08)}
+.exp-motion-trigger{appearance:none;color:inherit;cursor:pointer;touch-action:manipulation;position:relative}
+.exp-motion-trigger::after{content:'';position:absolute;inset:-7px}
+.exp-card.is-motion-active{border-color:rgba(255,245,235,.2);box-shadow:var(--shadow-hover)}
+.proj{isolation:isolate}
+.proj-top,.proj-gallery{position:relative;z-index:1}
+.project-fx{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none;mix-blend-mode:screen;opacity:.92}
+.project-fx.fx-ink{mix-blend-mode:multiply;opacity:.86}
+.proj:focus-within{border-color:rgba(255,245,235,.19)}
+#proj-bizsim{--flow-arrival:0;box-shadow:var(--shadow-card),0 0 calc(8px + var(--flow-arrival) * 34px) rgba(0,212,255,calc(var(--flow-arrival) * .22))}
+#proj-bizsim .proj-label{z-index:2}
+@media(max-width:900px){
+  .hero-motion-caption{right:1.5rem;bottom:1.5rem}
+  .hero-motion-toggle{right:1.5rem;bottom:3.5rem}
+  .hero-particle-field{opacity:.68}
+  .particle-bridge{--bridge-length:310px;right:2.5rem}
+}
+@media(max-width:600px){
+  .hero-motion-caption{display:none}
+  .hero-motion-toggle{right:max(1.25rem,env(safe-area-inset-right));top:5rem;bottom:auto;background:rgba(7,14,43,.68)}
+  .hero-particle-field{opacity:.56}
+  .particle-bridge{--bridge-length:270px;right:1.7rem}
+  .expertise-vfx{display:block;opacity:.16;min-height:520px}
+  .exp-card-product h3{white-space:normal;overflow-wrap:anywhere}
+}
+@media(prefers-reduced-motion:reduce){
+  .hero-particle-field,.project-fx{opacity:.28}
+  .particle-bridge{--bridge-energy:.5!important}
+}
+@media(max-width:900px){
+  #proj-bizsim .proj-top{grid-template-columns:1fr;min-height:0}
+  #proj-bizsim .proj-thumb{min-height:300px}
+  .featured-case-kicker{align-items:flex-start}
+}
+@media(max-width:600px){
+  .projects{padding-top:5rem}
+  #proj-bizsim .proj-info{padding:1.5rem}
+  #proj-bizsim .proj-thumb{min-height:230px}
+  .featured-case-kicker{display:grid;gap:.35rem}
+  .featured-case-kicker span:last-child{text-align:left}
+  .tools-section{padding:1.8rem 1.5rem}
+}
 </style>
 </head>
 <body>
@@ -307,11 +426,10 @@ footer{padding:1.5rem 2.5rem;text-align:center;border-top:1px solid rgba(255,255
 <nav id="nav" aria-label="Primary navigation">
   <a class="nav-logo" href="#hero">TOBY TANG</a>
   <ul class="nav-links" id="navLinks">
+    <li><a href="#projects">Selected Work</a></li>
     <li><a href="#about" >About</a></li>
     <li><a href="#expertise" >Expertise</a></li>
-    <li><a href="#projects" >Projects</a></li>
     <li><a href="#experience" >Experience</a></li>
-    <li><a href="#education" >Education</a></li>
     <li><a href="#contact" >Contact</a></li>
   <li><a href="assets/aicheng-toby-tang-resume.pdf" download="Aicheng Toby Tang Resume.pdf" target="_blank" rel="noopener noreferrer" style="color:var(--pool);font-weight:700">Resume ↗</a></li>
   </ul>
@@ -320,56 +438,54 @@ footer{padding:1.5rem 2.5rem;text-align:center;border-top:1px solid rgba(255,255
 
 <main id="main-content" tabindex="-1">
 <section class="hero" id="hero">
-  <video class="hero-video" autoplay muted loop playsinline aria-hidden="true" tabindex="-1">
-    <source src="hero-bg.mp4" type="video/mp4">
-  </video>
+  <video class="hero-video" muted loop playsinline preload="none" data-src="hero-bg.mp4" aria-hidden="true" tabindex="-1"></video>
+  <canvas class="hero-particle-field" id="heroParticleField" aria-hidden="true"></canvas>
   <div class="hero-overlay"></div>
   <div class="hero-content">
     <div class="hero-tag">Creative Multidisciplinarian ✦</div>
     <h1><span class="line">Crafting</span><span class="line"><span class="accent">Dreams</span> Into</span><span class="line">Experiences.</span></h1>
-    <div class="hero-roles"><span class="role-pill role-product">✦ Product Designer</span><span class="role-pill role-ux">◎ UI/UX Designer</span><span class="role-pill role-game">◆ Game Designer</span><span class="role-pill role-vfx">✦ VFX Artist</span></div>
+    <p class="sr-only" id="heroFlowHelp">Choose a discipline to reshape the decorative particle field.</p>
+    <div class="hero-roles" role="group" aria-label="Explore design disciplines" aria-describedby="heroFlowHelp"><button class="role-pill role-product" type="button" data-flow-mode="product" aria-pressed="true">✦ Product Designer</button><button class="role-pill role-ux" type="button" data-flow-mode="ux" aria-pressed="false">◎ UI/UX Designer</button><button class="role-pill role-game" type="button" data-flow-mode="game" aria-pressed="false">◆ Game Designer</button><button class="role-pill role-vfx" type="button" data-flow-mode="vfx" aria-pressed="false">✦ VFX Artist</button></div>
     <p class="hero-desc">Blending user-centered design with visual artistry to craft immersive, unforgettable digital worlds.</p>
     <div class="hero-cta"><a href="#projects" class="btn btn-primary">View My Work ↓</a><a href="#contact" class="btn btn-ghost">Get in Touch</a></div>
   </div>
-</section>
-
-<section class="about" id="about">
-  <div class="float-shape" style="width:300px;height:300px;background:rgba(0,212,255,.06);top:10%;right:-5%"></div>
-  <div class="float-shape" style="width:200px;height:200px;background:rgba(192,132,252,.05);bottom:15%;left:-3%;animation-delay:-3s"></div>
-  <div class="about-inner">
-    <div class="about-visual">
-      <div class="about-card">
-        <div class="about-avatar" style="padding:0;overflow:hidden"><img src="assets/images/toby-tang-headshot.webp" alt="Portrait of Aicheng Toby Tang" width="300" height="300" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;border-radius:50%"></div>
-        <div class="about-name">Aicheng (Toby) Tang</div>
-        <div class="about-titles">Product Designer · UI/UX Designer · Game Designer · VFX Artist</div>
-        <div class="about-badges"><span class="badge badge-ux">UX Research</span><span class="badge badge-ux">UI Design</span><span class="badge badge-game">Game Design</span><span class="badge badge-vfx">VFX Art</span><span class="badge badge-3d">3D Modeling</span></div>
-      </div>
-    </div>
-    <div class="about-text">
-      <div class="stag">✦ About Me</div>
-      <h2 class="stitle">Design With<br>Intention & Soul</h2>
-      <p>Hi, I'm <strong>Toby</strong> — a creative who works at the intersection of <strong>UI/UX design</strong>, <strong>game design</strong>, and <strong>visual effects art</strong>.</p>
-      <p>I believe the best design feels like a waking dream — intuitive yet unexpected, functional yet beautiful. My UX-driven approach ensures every interface serves its users, while my VFX background adds layers of <strong>visual storytelling</strong> that turn interactions into moments.</p>
-      <p>Whether it's crafting seamless user flows, designing gameplay systems, or building particle simulations — I bring a <strong>holistic vision</strong> that bridges art and logic.</p>
-    </div>
-  </div>
-  <div class="expertise-merged" id="expertise">
-    <canvas class="expertise-vfx" id="expertiseVfx" aria-hidden="true"></canvas>
-    <div class="stag">✦ What I Do</div><h2 class="stitle">Core Expertise</h2>
-    <div class="expertise-cards">
-      <div class="exp-card exp-card-product"><div class="product-card-top"><div class="exp-card-icon icon-product">PD</div><span class="product-kicker">Primary Focus</span></div><h3>Product Design</h3><p>I design the product layer and build the front end behind it: flows, interaction models, design systems, and polished interfaces that can move from Figma into production.</p><div class="product-proof"><span>Product Thinking</span><span>Figma to React</span><span>Ship-ready UI</span></div></div>
-      <div class="exp-card exp-card-ux"><div class="exp-card-icon icon-ux">UX</div><h3>UI / UX Design</h3><p>User research, wireframing, prototyping, and building interfaces that feel natural. Translating complex systems into seamless, delightful journeys.</p><div class="exp-tags"><span>Figma</span><span>User Research</span><span>Wireframing</span><span>Prototyping</span><span>Usability Testing</span><span>Design Systems</span><span>HCI</span></div></div>
-      <div class="exp-card exp-card-game"><div class="exp-card-icon icon-game">GD</div><h3>Game Design</h3><p>Concept development, mechanics design, level design, and systems balancing. Crafting gameplay loops that keep players in flow.</p><div class="exp-tags"><span>Unity</span><span>Game Programming</span><span>Level Design</span><span>Systems Design</span><span>Playtesting</span><span>GDD</span><span>Narrative</span></div></div>
-      <div class="exp-card exp-card-vfx"><div class="exp-card-icon icon-vfx">FX</div><h3>VFX Art</h3><p>Real-time & pre-rendered visual effects, particle systems, shaders, and compositing that add spectacle and emotion.</p><div class="exp-tags"><span>Houdini</span><span>After Effects</span><span>VFX Graph</span><span>Shader Graph</span><span>Particle System</span><span>Blender</span><span>Unity</span></div></div>
-    </div>
-  </div>
+  <div class="hero-motion-caption" aria-hidden="true"><span></span>From Particle to Product</div>
+  <button class="hero-motion-toggle" id="motionToggle" type="button" aria-pressed="false">Pause motion</button>
 </section>
 
 <section class="projects" id="projects">
+  <div class="particle-bridge" id="particleBridge" aria-hidden="true"><span></span></div>
   <div class="projects-inner">
-    <div class="stag">✦ Selected Work</div><h2 class="stitle">Projects</h2>
-    <p class="section-note">A mix of product systems, game feel, and visual worlds, framed as concise case studies without losing the art direction.</p>
+    <div class="stag">✦ Product + Creative Practice</div><h2 class="stitle">Selected Work</h2>
+    <p class="section-note">Product thinking leads the story, followed by selected worlds, systems, and visual craft.</p>
     <div class="projects-layout">
+
+      <div class="proj" id="proj-bizsim">
+        <div class="proj-top flip">
+          <div class="proj-info">
+            <div class="featured-case-kicker"><span>Featured Product Case</span><span>Product · AI · Front-end</span></div>
+            <h3>AI Business Simulator</h3>
+            <p class="featured-lede">An agent-led learning platform that turns passive case reading into active business decision-making. I shaped the product experience and front end around a CEO moderator and role-specific AI agents.</p>
+            <div class="proj-case-meta"><div><span>Role</span><strong>Product Design / Front-end</strong></div><div><span>Challenge</span><strong>Active case learning</strong></div><div><span>Outcome</span><strong>Live AI prototype</strong></div></div>
+            <div class="proj-tags"><span>Product Strategy</span><span>Multi-Agent UX</span><span>React</span><span>FastAPI</span></div>
+            <div class="featured-actions">
+              <a href="https://www.kaggle.com/competitions/gemma-4-good-hackathon/writeups/ai-business-simulator" class="proj-link featured-primary" target="_blank" rel="noopener noreferrer">Read Case Study →</a>
+              <a href="https://bizsimai.vercel.app/" class="proj-link featured-secondary" target="_blank" rel="noopener noreferrer">Live Demo →</a>
+              <a href="https://github.com/zhouheng0118/AI-Business-Simulator" class="proj-link featured-secondary" target="_blank" rel="noopener noreferrer">GitHub →</a>
+            </div>
+          </div>
+          <button class="proj-thumb" type="button" aria-label="Open AI Business Simulator image preview">
+            <img id="bizsim-hero" src="assets/images/ai-business-simulator-hero.webp" alt="AI Business Simulator case library interface" width="2000" height="1007" loading="lazy" decoding="async">
+            <span class="proj-label label-ai">Featured · AI Product</span>
+          </button>
+        </div>
+        <div class="proj-gallery" role="group" aria-label="AI Business Simulator image gallery">
+          <button class="gallery-thumb active" type="button" aria-label="Open AI Business Simulator case detail" aria-pressed="true"><img src="assets/images/ai-business-simulator-case-detail.webp" alt="AI Business Simulator case detail view" width="839" height="1267" loading="lazy" decoding="async"></button>
+          <button class="gallery-thumb" type="button" aria-label="Open AI Business Simulator CFO agent interview" aria-pressed="false"><img src="assets/images/ai-business-simulator-cfo-agent.webp" alt="AI Business Simulator CFO agent interview" width="2000" height="1007" loading="lazy" decoding="async"></button>
+          <button class="gallery-thumb" type="button" aria-label="Open AI Business Simulator instructor dashboard" aria-pressed="false"><img src="assets/images/ai-business-simulator-instructor-dashboard.webp" alt="AI Business Simulator instructor dashboard" width="2000" height="1035" loading="lazy" decoding="async"></button>
+          <button class="gallery-thumb" type="button" aria-label="Open AI Business Simulator creation form" aria-pressed="false"><img src="assets/images/ai-business-simulator-create-simulation.webp" alt="AI Business Simulator creation form" width="2000" height="759" loading="lazy" decoding="async"></button>
+        </div>
+      </div>
 
       <div class="proj" id="proj-dream">
         <div class="proj-top">
@@ -432,42 +548,53 @@ footer{padding:1.5rem 2.5rem;text-align:center;border-top:1px solid rgba(255,255
         </div>
       </div>
 
-      <div class="proj" id="proj-bizsim">
-        <div class="proj-top flip">
-          <div class="proj-info">
-            <h3>AI Business Simulator</h3>
-            <p>Multi-agent business case simulation platform for first-year business students. A CEO Agent moderates mission-based inquiry — students interview role-specific agents (CFO, marketing, ops lead) to gather evidence and build recommendations, transforming passive case reading into active business decision-making.</p>
-            <div class="proj-case-meta"><div><span>Role</span><strong>Product Design / Front-end</strong></div><div><span>Challenge</span><strong>Active case learning</strong></div><div><span>Outcome</span><strong>Live AI prototype</strong></div></div>
-            <div class="proj-tags"><span>Gemma</span><span>Multi-Agent LLM</span><span>React</span><span>FastAPI</span><span>EdTech</span><span>UX Design</span></div>
-            <div style="display:flex;gap:1rem;flex-wrap:wrap">
-              <a href="https://www.kaggle.com/competitions/gemma-4-good-hackathon/writeups/ai-business-simulator" class="proj-link" target="_blank" rel="noopener noreferrer">View Writeup →</a>
-              <a href="https://bizsimai.vercel.app/" class="proj-link" target="_blank" rel="noopener noreferrer" style="color:rgba(255,245,235,.4)">Live Demo →</a>
-              <a href="https://github.com/zhouheng0118/AI-Business-Simulator" class="proj-link" target="_blank" rel="noopener noreferrer" style="color:rgba(255,245,235,.4)">GitHub →</a>
-            </div>
-          </div>
-          <button class="proj-thumb" type="button" aria-label="Open AI Business Simulator image preview">
-            <img id="bizsim-hero" src="assets/images/ai-business-simulator-hero.webp" alt="AI Business Simulator case library interface" width="2000" height="1007" loading="lazy" decoding="async">
-            <span class="proj-label label-ai">Hackathon · AI/UX</span>
-          </button>
-        </div>
-        <div class="proj-gallery" role="group" aria-label="AI Business Simulator image gallery">
-          <button class="gallery-thumb active" type="button" aria-label="Open AI Business Simulator case detail" aria-pressed="true"><img src="assets/images/ai-business-simulator-case-detail.webp" alt="AI Business Simulator case detail view" width="839" height="1267" loading="lazy" decoding="async"></button>
-          <button class="gallery-thumb" type="button" aria-label="Open AI Business Simulator CFO agent interview" aria-pressed="false"><img src="assets/images/ai-business-simulator-cfo-agent.webp" alt="AI Business Simulator CFO agent interview" width="2000" height="1007" loading="lazy" decoding="async"></button>
-          <button class="gallery-thumb" type="button" aria-label="Open AI Business Simulator instructor dashboard" aria-pressed="false"><img src="assets/images/ai-business-simulator-instructor-dashboard.webp" alt="AI Business Simulator instructor dashboard" width="2000" height="1035" loading="lazy" decoding="async"></button>
-          <button class="gallery-thumb" type="button" aria-label="Open AI Business Simulator creation form" aria-pressed="false"><img src="assets/images/ai-business-simulator-create-simulation.webp" alt="AI Business Simulator creation form" width="2000" height="759" loading="lazy" decoding="async"></button>
-        </div>
-      </div>
+
 
     </div>
   </div>
 </section>
 
+<section class="about" id="about">
+  <div class="float-shape" style="width:300px;height:300px;background:rgba(0,212,255,.06);top:10%;right:-5%"></div>
+  <div class="float-shape" style="width:200px;height:200px;background:rgba(192,132,252,.05);bottom:15%;left:-3%;animation-delay:-3s"></div>
+  <div class="about-inner">
+    <div class="about-visual">
+      <div class="about-card">
+        <div class="about-avatar" style="padding:0;overflow:hidden"><img src="assets/images/toby-tang-headshot.webp" alt="Portrait of Aicheng Toby Tang" width="300" height="300" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;border-radius:50%"></div>
+        <div class="about-name">Aicheng (Toby) Tang</div>
+        <div class="about-titles">Product Designer · UI/UX Designer · Game Designer · VFX Artist</div>
+        <div class="about-badges"><span class="badge badge-ux">UX Research</span><span class="badge badge-ux">UI Design</span><span class="badge badge-game">Game Design</span><span class="badge badge-vfx">VFX Art</span><span class="badge badge-3d">3D Modeling</span></div>
+      </div>
+    </div>
+    <div class="about-text">
+      <div class="stag">✦ About Me</div>
+      <h2 class="stitle">Design With<br>Intention & Soul</h2>
+      <p>Hi, I'm <strong>Toby</strong> — a creative who works at the intersection of <strong>UI/UX design</strong>, <strong>game design</strong>, and <strong>visual effects art</strong>.</p>
+      <p>I believe the best design feels like a waking dream — intuitive yet unexpected, functional yet beautiful. My UX-driven approach ensures every interface serves its users, while my VFX background adds layers of <strong>visual storytelling</strong> that turn interactions into moments.</p>
+      <p>Whether it's crafting seamless user flows, designing gameplay systems, or building particle simulations — I bring a <strong>holistic vision</strong> that bridges art and logic.</p>
+    </div>
+  </div>
+  <div class="expertise-merged" id="expertise">
+    <canvas class="expertise-vfx" id="expertiseVfx" aria-hidden="true"></canvas>
+    <div class="stag">✦ What I Do</div><h2 class="stitle">Core Expertise</h2>
+    <div class="expertise-cards">
+      <div class="exp-card exp-card-product" data-capability="product" data-expertise-mode="grid"><div class="product-card-top"><button class="exp-card-icon exp-motion-trigger icon-product" type="button" aria-label="Preview Product Design particle grid">PD</button><span class="product-kicker">Primary Focus</span></div><h3>Product Design</h3><p>I design the product layer and build the front end behind it: flows, interaction models, design systems, and polished interfaces that can move from Figma into production.</p><div class="product-proof"><span>Product Thinking</span><span>Figma to React</span><span>Ship-ready UI</span></div></div>
+      <div class="exp-card exp-card-ux" data-capability="ux" data-expertise-mode="nodes"><button class="exp-card-icon exp-motion-trigger icon-ux" type="button" aria-label="Preview UI and UX flow nodes">UX</button><h3>UI / UX Design</h3><p>User research, wireframing, prototyping, and building interfaces that feel natural. Translating complex systems into seamless, delightful journeys.</p><div class="exp-tags"><span>Figma</span><span>User Research</span><span>Wireframing</span><span>Prototyping</span><span>Usability Testing</span><span>Design Systems</span><span>HCI</span></div></div>
+      <div class="exp-card exp-card-game" data-capability="game" data-expertise-mode="trails"><button class="exp-card-icon exp-motion-trigger icon-game" type="button" aria-label="Preview Game Design trajectory trails">GD</button><h3>Game Design</h3><p>Concept development, mechanics design, level design, and systems balancing. Crafting gameplay loops that keep players in flow.</p><div class="exp-tags"><span>Unity</span><span>Game Programming</span><span>Level Design</span><span>Systems Design</span><span>Playtesting</span><span>GDD</span><span>Narrative</span></div></div>
+      <div class="exp-card exp-card-vfx" data-capability="vfx" data-expertise-mode="ripple"><button class="exp-card-icon exp-motion-trigger icon-vfx" type="button" aria-label="Preview VFX energy ripple">FX</button><h3>VFX Art</h3><p>Real-time & pre-rendered visual effects, particle systems, shaders, and compositing that add spectacle and emotion.</p><div class="exp-tags"><span>Houdini</span><span>After Effects</span><span>VFX Graph</span><span>Shader Graph</span><span>Particle System</span><span>Blender</span><span>Unity</span></div></div>
+    </div>
+  </div>
+
 <div class="tools-section">
   <div class="tools-track">
     <span class="tool-chip">◎ Figma</span><span class="tool-chip">◎ Unity</span><span class="tool-chip">◎ Blender</span><span class="tool-chip">◎ Houdini</span><span class="tool-chip">◎ Maya</span><span class="tool-chip">◎ After Effects</span><span class="tool-chip">◎ Photoshop</span><span class="tool-chip">◎ Substance Painter</span><span class="tool-chip">◎ 3DS MAX</span><span class="tool-chip">◎ Illustrator</span><span class="tool-chip">◎ Premiere</span><span class="tool-chip">◎ Python</span><span class="tool-chip">◎ C#</span><span class="tool-chip">◎ Perforce</span><span class="tool-chip">◎ GitHub</span>
-    <span class="tool-chip">◎ Figma</span><span class="tool-chip">◎ Unity</span><span class="tool-chip">◎ Blender</span><span class="tool-chip">◎ Houdini</span><span class="tool-chip">◎ Maya</span><span class="tool-chip">◎ After Effects</span><span class="tool-chip">◎ Photoshop</span><span class="tool-chip">◎ Substance Painter</span><span class="tool-chip">◎ 3DS MAX</span><span class="tool-chip">◎ Illustrator</span><span class="tool-chip">◎ Premiere</span><span class="tool-chip">◎ Python</span><span class="tool-chip">◎ C#</span><span class="tool-chip">◎ Perforce</span><span class="tool-chip">◎ GitHub</span>
   </div>
 </div>
+</section>
+
+
+
+
 
 <section class="experience-section" id="experience">
   <div class="exp-inner">
@@ -481,9 +608,8 @@ footer{padding:1.5rem 2.5rem;text-align:center;border-top:1px solid rgba(255,255
       <div class="tl-item"><div class="tl-date">DEC 2022 — FEB 2023</div><h3>Private Portfolio Instructor</h3><h4>Self-Employed · Warren, NJ</h4><ul><li>Developed personalized lesson plans for each student's artistic goals</li><li>Assisted students in curating portfolios for college admissions</li></ul></div>
     </div>
   </div>
-</section>
 
-<section class="education-section" id="education">
+<div class="education-section" id="education">
   <div class="edu-inner">
     <div class="stag">✦ Academic</div><h2 class="stitle">Education</h2>
     <div class="edu-cards">
@@ -497,7 +623,10 @@ footer{padding:1.5rem 2.5rem;text-align:center;border-top:1px solid rgba(255,255
       </div>
     </div>
   </div>
+</div>
 </section>
+
+
 
 <section class="contact-section" id="contact">
   <div class="contact-inner">
@@ -513,5 +642,6 @@ footer{padding:1.5rem 2.5rem;text-align:center;border-top:1px solid rgba(255,255
 <footer>© 2026 Toby Tang · Designed with soul.</footer>
 
 <script src="assets/site.js" defer></script>
+<script src="assets/motion.js" defer></script>
 </body>
 </html>
