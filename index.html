@@ -355,7 +355,7 @@ body::before{opacity:.018;background-size:5px 5px}
 .contact-email:hover,.contact-email:focus-visible{text-shadow:0 0 24px rgba(0,212,255,.28)}
 
 /* P2 interaction system */
-.hero-particle-field{position:absolute;inset:0;width:100%;height:100%;z-index:2;pointer-events:none;opacity:.56;mix-blend-mode:screen;-webkit-mask-image:linear-gradient(180deg,rgba(0,0,0,.14),#000 30%,#000 92%,transparent);mask-image:linear-gradient(180deg,rgba(0,0,0,.14),#000 30%,#000 92%,transparent)}
+.hero-particle-field{position:absolute;inset:0;width:100%;height:100%;z-index:2;pointer-events:none;opacity:.64;mix-blend-mode:screen;-webkit-mask-image:linear-gradient(180deg,rgba(0,0,0,.14),#000 30%,#000 92%,transparent);mask-image:linear-gradient(180deg,rgba(0,0,0,.14),#000 30%,#000 92%,transparent)}
 .hero-motion-caption{position:absolute;right:2.5rem;bottom:2.3rem;z-index:10;display:flex;align-items:center;gap:.65rem;font-family:var(--font-mono);font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,245,235,.48)}
 .hero-motion-caption span{display:block;width:34px;height:1px;background:linear-gradient(90deg,transparent,var(--pool));transform-origin:right;transition:transform var(--motion-base) var(--ease-out)}
 .hero:focus-within .hero-motion-caption span{transform:scaleX(1.7)}
@@ -383,13 +383,13 @@ body::before{opacity:.018;background-size:5px 5px}
 @media(max-width:900px){
   .hero-motion-caption{right:1.5rem;bottom:1.5rem}
   .hero-motion-toggle{right:1.5rem;bottom:3.5rem}
-  .hero-particle-field{opacity:.48}
+  .hero-particle-field{opacity:.56}
   .particle-bridge{--bridge-length:310px;right:2.5rem}
 }
 @media(max-width:600px){
   .hero-motion-caption{display:none}
   .hero-motion-toggle{right:max(1.25rem,env(safe-area-inset-right));top:5rem;bottom:auto;background:rgba(7,14,43,.68)}
-  .hero-particle-field{opacity:.42}
+  .hero-particle-field{opacity:.48}
   .particle-bridge{--bridge-length:270px;right:1.7rem}
   .expertise-vfx{display:block;opacity:.16;min-height:520px}
   .exp-card-product h3{white-space:normal;overflow-wrap:anywhere}

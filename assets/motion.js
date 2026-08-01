@@ -148,9 +148,9 @@
 
     function chooseParticleCount(){
       lowQuality=window.innerWidth<650||saveData||(navigator.hardwareConcurrency&&navigator.hardwareConcurrency<=4);
-      if(lowQuality)return 30;
-      if(window.innerWidth<1000)return 54;
-      return 88;
+      if(lowQuality)return 38;
+      if(window.innerWidth<1000)return 88;
+      return 150;
     }
 
     function resetParticles(count){
@@ -164,7 +164,7 @@
           y:y,
           vx:0,
           vy:0,
-          size:.65+seeded(i,3)*1.2,
+          size:.72+seeded(i,3)*1.38,
           seed:seeded(i,4),
           phase:seeded(i,5)*Math.PI*2,
           driftRate:.72+seeded(i,6)*.55,
@@ -344,12 +344,12 @@
       particles.forEach(function(particle,index){
         var pulse=.94+Math.sin(time*.00085*particle.driftRate+particle.phase)*.06;
         var size=particle.size*(1+contract*.22)*pulse;
-        if(index%4===0){
-          ctx.globalAlpha=.035*(1-contract*.45);
+        if(index%3===0){
+          ctx.globalAlpha=.05*(1-contract*.45);
           ctx.fillStyle=particle.color;
-          ctx.beginPath();ctx.arc(particle.x,particle.y,size*4.2,0,Math.PI*2);ctx.fill();
+          ctx.beginPath();ctx.arc(particle.x,particle.y,size*3.8,0,Math.PI*2);ctx.fill();
         }
-        ctx.globalAlpha=clamp(.28+particle.seed*.22+contract*.08,0,.58);
+        ctx.globalAlpha=clamp(.36+particle.seed*.24+contract*.06,0,.66);
         ctx.fillStyle=particle.color;
         ctx.beginPath();ctx.arc(particle.x,particle.y,size,0,Math.PI*2);ctx.fill();
       });
