@@ -31,6 +31,31 @@ The portfolio presents Toby as a multidisciplinary product designer who turns pa
 - Effects are short, input-driven, and idle at zero animation frames. Mouse, touch, and keyboard focus receive equivalent responses.
 - Respect `prefers-reduced-motion`; the Pause Motion control stops the Hero video and all Canvas animation.
 
+### P3 motion specification
+
+| Token | Value | Use |
+| --- | --- | --- |
+| Fast | `160ms` | Color, opacity, underline, and focus feedback |
+| Base | `280ms` | Small transforms, borders, shadows, and control state changes |
+| Slow | `520ms` | Navigation, media transitions, and section reveals |
+| Effect | `720ms` | Standard one-shot Canvas responses |
+| Effect long | `960ms` | Organic diffusion, ripples, and ink-like responses |
+| Morph | `1040ms` | Hero formations and other deliberate state-to-state transformations |
+
+- Use `cubic-bezier(.22, 1, .36, 1)` as the primary easing. Linear easing is reserved for the Tools marquee; particle springs and smootherstep interpolation are reserved for generative formations.
+- Use three viewport triggers: **near** (`threshold: 0`, `rootMargin: 100px`) for resource preparation, **reveal** (`threshold: .18`, bottom margin `-18%`) for one-shot content entry, and **commit** (`threshold: .62`, once per item) for coarse-pointer previews. The Hero scroll handoff remains a separate narrative timeline.
+- Color feedback is semantic: Pool cyan for global actions and focus, Mint for Product and shipped states, Sunset purple for Game, Coral for VFX and energy, and Cream for neutral selection. Strengthen the existing semantic color before adding glow or a new hue.
+
+| Profile | Frame rate | Canvas DPR | Hero particles | Default use |
+| --- | ---: | ---: | ---: | --- |
+| Full | `60fps` | up to `1.5` | `120–150` | Healthy desktop and fine-pointer devices |
+| Lite | `30fps` | `1` | `42–56` | Screens up to 900 px, coarse pointers, or limited hardware |
+| Static | `0fps` | up to `1` | `24–32`, drawn once | Reduced motion, Save-Data, or sustained low performance |
+
+- Profiles may only step down during a session. Mobile starts in Lite: avoid hover-only behavior, keep touch and keyboard responses equivalent, run no more than one local effect at once, and remove secondary continuous motion before hiding content.
+- Pause video, Canvas, and the Tools marquee outside the **near** range and whenever the page is hidden, the menu or lightbox is open, or the user pauses motion. Resume only visible instances. Temporary background or user pauses remain distinct from the persistent Static profile.
+- `prefers-reduced-motion` always selects Static, replaces scroll animation with immediate state changes, and preserves a clear still composition rather than an empty effect layer.
+
 ## Guardrails
 
 - Never place decorative effects above readable copy or project labels.

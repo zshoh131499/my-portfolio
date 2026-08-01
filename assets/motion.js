@@ -2,28 +2,91 @@
   'use strict';
 
   var reduceQuery=window.matchMedia('(prefers-reduced-motion: reduce)');
+  var reducedDataQuery=window.matchMedia('(prefers-reduced-data: reduce)');
+  var mobileQuery=window.matchMedia('(max-width: 600px)');
+  var compactQuery=window.matchMedia('(max-width: 900px)');
   var finePointerQuery=window.matchMedia('(hover: hover) and (pointer: fine)');
   var coarsePointerQuery=window.matchMedia('(pointer: coarse)');
   var connection=navigator.connection||navigator.mozConnection||navigator.webkitConnection;
-  var saveData=Boolean(connection&&connection.saveData);
   var subscribers=[];
   var userPaused=false;
   var storageKey='toby-portfolio-motion-paused';
+  var resizeProfileFrame=0;
+  var MOTION={fast:160,base:280,slow:520,effect:720,effectLong:960,morph:1040,touchHold:1680,tapSlop:8,commit:.62};
+  var requestedProfile='';
+  try{requestedProfile=new URLSearchParams(window.location.search).get('motion-profile')||'';}catch(error){}
+
+  function onMediaChange(query,callback){
+    if(query.addEventListener)query.addEventListener('change',callback);
+    else if(query.addListener)query.addListener(callback);
+  }
+
+  function readConnection(){
+    var effectiveType=connection&&connection.effectiveType?String(connection.effectiveType).toLowerCase():'';
+    return {
+      saveData:Boolean(connection&&connection.saveData),
+      is2g:effectiveType==='2g'||effectiveType==='slow-2g'
+    };
+  }
+
+  function createProfile(){
+    var network=readConnection();
+    var cores=Number(navigator.hardwareConcurrency)||0;
+    var memory=Number(navigator.deviceMemory)||0;
+    var staticTier=requestedProfile==='static'||reduceQuery.matches||reducedDataQuery.matches||network.saveData||network.is2g||(cores>0&&cores<=2)||(memory>0&&memory<=2);
+    var liteTier=!staticTier&&(requestedProfile==='lite'||compactQuery.matches||coarsePointerQuery.matches||(cores>0&&cores<=4)||(memory>0&&memory<=4));
+    var tier=staticTier?'static':(liteTier?'lite':'full');
+    return {
+      tier:tier,
+      maxDpr:tier==='full'?1.5:1,
+      maxCanvasPixels:tier==='full'?5000000:(tier==='lite'?2000000:1600000),
+      heroParticles:tier==='full'?150:(tier==='lite'?56:32),
+      frameInterval:tier==='lite'?33:0,
+      fps:tier==='full'?60:(tier==='lite'?30:0),
+      mobile:mobileQuery.matches,
+      compact:compactQuery.matches,
+      saveData:network.saveData,
+      reducedData:reducedDataQuery.matches,
+      effectiveType:connection&&connection.effectiveType?connection.effectiveType:null,
+      hardwareConcurrency:cores||null,
+      deviceMemory:memory||null
+    };
+  }
+
+  function profileChanged(previous,next){
+    return !previous||previous.tier!==next.tier||previous.mobile!==next.mobile||previous.compact!==next.compact||previous.maxDpr!==next.maxDpr||previous.maxCanvasPixels!==next.maxCanvasPixels||previous.heroParticles!==next.heroParticles;
+  }
+
+  var performanceProfile=createProfile();
+  document.documentElement.setAttribute('data-motion-profile',performanceProfile.tier);
 
   try{userPaused=window.localStorage.getItem(storageKey)==='true';}catch(error){}
 
-  function motionAllowed(){
+  function motionPermitted(){
     return !reduceQuery.matches&&!userPaused&&!document.hidden&&!document.body.classList.contains('menu-open')&&!document.body.classList.contains('lightbox-open');
   }
 
+  function motionAllowed(){
+    return motionPermitted()&&performanceProfile.tier!=='static';
+  }
+
   function notifyMotion(){
-    subscribers.slice().forEach(function(callback){callback(motionAllowed(),reduceQuery.matches);});
+    subscribers.slice().forEach(function(callback){callback(motionAllowed(),reduceQuery.matches,performanceProfile);});
   }
 
   function subscribeMotion(callback){
     subscribers.push(callback);
-    callback(motionAllowed(),reduceQuery.matches);
+    callback(motionAllowed(),reduceQuery.matches,performanceProfile);
     return function(){subscribers=subscribers.filter(function(item){return item!==callback;});};
+  }
+
+  function refreshProfile(force){
+    var next=createProfile();
+    var changed=profileChanged(performanceProfile,next);
+    performanceProfile=next;
+    document.documentElement.setAttribute('data-motion-profile',performanceProfile.tier);
+    syncMotionButton();
+    if(changed||force)notifyMotion();
   }
 
   function setUserPaused(paused){
@@ -36,26 +99,39 @@
   var motionButton=document.getElementById('motionToggle');
   function syncMotionButton(){
     var systemReduced=reduceQuery.matches;
+    var profileStatic=performanceProfile.tier==='static';
     document.body.classList.toggle('motion-paused',userPaused||systemReduced);
+    document.body.classList.toggle('motion-static',profileStatic);
     if(!motionButton)return;
-    motionButton.disabled=systemReduced;
-    motionButton.setAttribute('aria-disabled',String(systemReduced));
-    motionButton.setAttribute('aria-pressed',String(userPaused||systemReduced));
-    motionButton.textContent=systemReduced?'Motion reduced':(userPaused?'Play motion':'Pause motion');
-    motionButton.title=reduceQuery.matches?'Your system reduced-motion preference is active.':'Pause or resume decorative motion.';
+    motionButton.disabled=systemReduced||profileStatic;
+    motionButton.setAttribute('aria-disabled',String(systemReduced||profileStatic));
+    motionButton.setAttribute('aria-pressed',String(userPaused||systemReduced||profileStatic));
+    motionButton.textContent=systemReduced?'Motion reduced':(profileStatic?'Static mode':(userPaused?'Play motion':'Pause motion'));
+    motionButton.title=systemReduced?'Your system reduced-motion preference is active.':(profileStatic?'Static visuals are active for this device or connection.':'Pause or resume decorative motion.');
   }
   if(motionButton){
     motionButton.addEventListener('click',function(){setUserPaused(!userPaused);});
     syncMotionButton();
   }
 
-  reduceQuery.addEventListener('change',function(){syncMotionButton();notifyMotion();});
+  onMediaChange(reduceQuery,function(){syncMotionButton();refreshProfile(true);});
+  onMediaChange(reducedDataQuery,function(){refreshProfile(true);});
+  onMediaChange(mobileQuery,function(){refreshProfile(true);});
+  onMediaChange(compactQuery,function(){refreshProfile(true);});
+  onMediaChange(coarsePointerQuery,function(){refreshProfile(true);});
+  if(connection&&connection.addEventListener)connection.addEventListener('change',function(){refreshProfile(true);});
+  window.addEventListener('resize',function(){
+    if(resizeProfileFrame)return;
+    resizeProfileFrame=requestAnimationFrame(function(){resizeProfileFrame=0;refreshProfile(false);});
+  },{passive:true});
   document.addEventListener('visibilitychange',notifyMotion);
   new MutationObserver(notifyMotion).observe(document.body,{attributes:true,attributeFilter:['class']});
 
   window.siteMotion={
     isAllowed:motionAllowed,
+    isPermitted:motionPermitted,
     isPaused:function(){return userPaused;},
+    getProfile:function(){return Object.assign({},performanceProfile);},
     setPaused:setUserPaused,
     subscribe:subscribeMotion
   };
@@ -71,13 +147,16 @@
     var value=Math.sin((index+1)*12.9898+(salt||0)*78.233)*43758.5453;
     return value-Math.floor(value);
   }
-  function canvasScale(canvas,context,maxDpr){
+  function canvasScale(canvas,context,profile){
     var rect=canvas.getBoundingClientRect();
-    var dpr=Math.min(window.devicePixelRatio||1,maxDpr||1.5);
     var width=Math.max(1,Math.round(rect.width));
     var height=Math.max(1,Math.round(rect.height));
-    var pixelWidth=Math.round(width*dpr);
-    var pixelHeight=Math.round(height*dpr);
+    var settings=profile||performanceProfile;
+    var dpr=Math.min(window.devicePixelRatio||1,settings.maxDpr);
+    var pixelBudget=Math.max(1,settings.maxCanvasPixels);
+    dpr=Math.min(dpr,Math.sqrt(pixelBudget/(width*height)));
+    var pixelWidth=Math.max(1,Math.round(width*dpr));
+    var pixelHeight=Math.max(1,Math.round(height*dpr));
     if(canvas.width!==pixelWidth||canvas.height!==pixelHeight){
       canvas.width=pixelWidth;
       canvas.height=pixelHeight;
@@ -100,7 +179,7 @@
       video.load();
     }
     function sync(allowed){
-      if(allowed&&visible&&!saveData){
+      if(allowed&&visible){
         ensureSource();
         var playPromise=video.play();
         if(playPromise&&playPromise.catch)playPromise.catch(function(){});
@@ -111,6 +190,22 @@
         visible=entries[0]?entries[0].isIntersecting:true;
         sync(motionAllowed());
       },{threshold:.04}).observe(video);
+    }
+    subscribeMotion(sync);
+  })();
+
+  // The marquee is compositor-friendly, but it should not keep moving offscreen.
+  (function manageToolsMarquee(){
+    var section=document.querySelector('.tools-section');
+    if(!section)return;
+    var rect=section.getBoundingClientRect();
+    var visible=rect.bottom>0&&rect.top<window.innerHeight;
+    function sync(allowed){section.classList.toggle('is-motion-visible',Boolean(allowed&&visible));}
+    if('IntersectionObserver' in window){
+      new IntersectionObserver(function(entries){
+        visible=entries[0]?entries[0].isIntersecting:true;
+        sync(motionAllowed());
+      },{threshold:.01,rootMargin:'40px 0px'}).observe(section);
     }
     subscribeMotion(sync);
   })();
@@ -132,7 +227,7 @@
     var modeFrom='product';
     var modeTo='product';
     var modeStarted=0;
-    var modeDuration=1050;
+    var modeDuration=MOTION.morph;
     var pointer={active:false,x:0,y:0,targetX:0,targetY:0,influence:0};
     var focusPoint={active:false,x:0,y:0,influence:0};
     var ripple=null;
@@ -143,15 +238,12 @@
     var visible=initialHeroRect.bottom>-80&&initialHeroRect.top<window.innerHeight+80;
     var frameId=0;
     var lastTime=0;
-    var lastMobileFrame=0;
-    var lowQuality=false;
+    var lastRenderedFrame=0;
+    var activeProfileTier=performanceProfile.tier;
     var colors=['#fff5eb','#00d4ff','#fff5eb','#5eead4','#fff5eb','#00d4ff','#c084fc'];
 
     function chooseParticleCount(){
-      lowQuality=window.innerWidth<650||saveData||(navigator.hardwareConcurrency&&navigator.hardwareConcurrency<=4);
-      if(lowQuality)return 38;
-      if(window.innerWidth<1000)return 88;
-      return 150;
+      return performanceProfile.heroParticles;
     }
 
     function resetParticles(count){
@@ -178,12 +270,14 @@
 
     function resize(){
       var count=chooseParticleCount();
-      metrics=canvasScale(canvas,ctx,lowQuality?1:1.5);
-      resetParticles(count);
+      var previousWidth=metrics.width;
+      var previousHeight=metrics.height;
+      metrics=canvasScale(canvas,ctx,performanceProfile);
+      if(previousWidth!==metrics.width||previousHeight!==metrics.height||particles.length!==count)resetParticles(count);
       refreshLandingAnchor();
       updateContract(true);
-      if(reduceQuery.matches)drawReduced();
-      else schedule();
+      if(performanceProfile.tier==='static')drawStatic();
+      else if(motionAllowed())schedule();
     }
 
     function flowPoint(mode,index,count){
@@ -265,6 +359,11 @@
       modeFrom=modeTo;
       modeTo=mode;
       modeStarted=performance.now();
+      if(performanceProfile.tier==='static'){
+        modeFrom=modeTo;
+        drawStatic(modeTo);
+        return;
+      }
       schedule();
     }
 
@@ -304,13 +403,13 @@
     function render(time){
       frameId=0;
       if(!visible||!motionAllowed())return;
-      if(lowQuality&&time-lastMobileFrame<33){frameId=requestAnimationFrame(render);return;}
-      lastMobileFrame=time;
+      if(performanceProfile.frameInterval&&time-lastRenderedFrame<performanceProfile.frameInterval){frameId=requestAnimationFrame(render);return;}
+      lastRenderedFrame=time;
       var delta=lastTime?clamp((time-lastTime)/16.67,.5,2):1;
       lastTime=time;
       updateContract(false);
       ctx.clearRect(0,0,metrics.width,metrics.height);
-      var rippleAge=ripple?(time-ripple.start)/1380:2;
+      var rippleAge=ripple?(time-ripple.start)/MOTION.effectLong:2;
 
       pointer.x+=(pointer.targetX-pointer.x)*.075*delta;
       pointer.y+=(pointer.targetY-pointer.y)*.075*delta;
@@ -370,15 +469,15 @@
       if(frameId)cancelAnimationFrame(frameId);
       frameId=0;
       lastTime=0;
+      lastRenderedFrame=0;
     }
 
-    function drawReduced(){
+    function drawStatic(mode){
       stop();
-      metrics=canvasScale(canvas,ctx,1);
       ctx.clearRect(0,0,metrics.width,metrics.height);
-      var count=32;
+      var count=performanceProfile.heroParticles;
       for(var i=0;i<count;i++){
-        var point=flowPoint('product',i,count);
+        var point=flowPoint(mode||modeTo||selectedMode,i,count);
         ctx.globalAlpha=.32;
         ctx.fillStyle=colors[i%colors.length];
         ctx.beginPath();ctx.arc(point.x,point.y,.85+seeded(i,14)*.65,0,Math.PI*2);ctx.fill();
@@ -447,8 +546,11 @@
         if(visible){scrollDirty=true;schedule();}else stop();
       },{threshold:0,rootMargin:'80px 0px'}).observe(hero);
     }
-    subscribeMotion(function(allowed,reduced){
-      if(reduced)drawReduced();
+    subscribeMotion(function(allowed,reduced,profile){
+      var tierChanged=activeProfileTier!==profile.tier;
+      activeProfileTier=profile.tier;
+      if(tierChanged){resize();return;}
+      if(profile.tier==='static')drawStatic();
       else if(allowed){scrollDirty=true;schedule();}
       else stop();
     });
@@ -469,13 +571,15 @@
     var visible=false;
     var releaseTimer=0;
     var lastFrame=0;
+    var activeProfileTier=performanceProfile.tier;
 
     function resize(){
-      metrics=canvasScale(canvas,ctx,window.innerWidth<650?1:1.5);
+      metrics=canvasScale(canvas,ctx,performanceProfile);
+      var staticProfile=performanceProfile.tier==='static';
       if(active&&activeCard){
         active.origin=cardPoint(activeCard);
-        if(reduceQuery.matches){ctx.clearRect(0,0,metrics.width,metrics.height);drawMode(active.mode,active.origin,1);}
-      }else drawIdle(reduceQuery.matches);
+        if(staticProfile){ctx.clearRect(0,0,metrics.width,metrics.height);drawMode(active.mode,active.origin,1);}
+      }else drawIdle(staticProfile);
     }
 
     function cardPoint(card){
@@ -571,7 +675,7 @@
     function render(time){
       frameId=0;
       if(!active||!visible||!motionAllowed())return;
-      if(window.innerWidth<650&&time-lastFrame<33){frameId=requestAnimationFrame(render);return;}
+      if(performanceProfile.frameInterval&&time-lastFrame<performanceProfile.frameInterval){frameId=requestAnimationFrame(render);return;}
       lastFrame=time;
       var progress=clamp((time-active.start)/active.duration,0,1);
       ctx.clearRect(0,0,metrics.width,metrics.height);
@@ -581,15 +685,16 @@
 
     function activate(card){
       if(!card||!visible)return false;
-      if(!reduceQuery.matches&&!motionAllowed())return false;
-      if(activeCard===card&&active&&performance.now()-active.start<140)return true;
+      var staticProfile=performanceProfile.tier==='static';
+      if(!staticProfile&&!motionAllowed())return false;
+      if(activeCard===card&&active&&performance.now()-active.start<MOTION.fast)return true;
       window.clearTimeout(releaseTimer);
       if(activeCard)activeCard.classList.remove('is-motion-active');
       activeCard=card;activeCard.classList.add('is-motion-active');
-      active={mode:card.dataset.expertiseMode||'grid',origin:cardPoint(card),start:performance.now(),duration:activeCard.dataset.expertiseMode==='ripple'?820:720};
+      active={mode:card.dataset.expertiseMode||'grid',origin:cardPoint(card),start:performance.now(),duration:activeCard.dataset.expertiseMode==='ripple'?MOTION.effectLong:MOTION.effect};
       if(frameId)cancelAnimationFrame(frameId);
       frameId=0;
-      if(reduceQuery.matches){
+      if(staticProfile){
         ctx.clearRect(0,0,metrics.width,metrics.height);
         drawMode(active.mode,active.origin,1);
         return true;
@@ -605,8 +710,8 @@
         if(!force&&card&&card.matches(':focus-within'))return;
         if(activeCard)activeCard.classList.remove('is-motion-active');
         activeCard=null;active=null;
-        drawIdle(reduceQuery.matches);
-      },typeof delay==='number'?delay:360);
+        drawIdle(performanceProfile.tier==='static');
+      },typeof delay==='number'?delay:MOTION.base);
     }
 
     Array.prototype.slice.call(section.querySelectorAll('[data-expertise-mode]')).forEach(function(card){
@@ -619,12 +724,12 @@
         trigger.addEventListener('focus',function(){activate(card);});
         trigger.addEventListener('blur',function(){release(card);});
         trigger.addEventListener('click',function(){
-          if(activate(card)&&Date.now()-lastTouchAt<500)release(card,1800,true);
+          if(activate(card)&&Date.now()-lastTouchAt<MOTION.slow)release(card,MOTION.touchHold,true);
         });
         trigger.addEventListener('pointerdown',function(event){if(event.pointerType==='touch')touchStart={x:event.clientX,y:event.clientY};},{passive:true});
         trigger.addEventListener('pointerup',function(event){
           if(event.pointerType!=='touch'||!touchStart)return;
-          if(Math.hypot(event.clientX-touchStart.x,event.clientY-touchStart.y)<8)lastTouchAt=Date.now();
+          if(Math.hypot(event.clientX-touchStart.x,event.clientY-touchStart.y)<MOTION.tapSlop)lastTouchAt=Date.now();
           touchStart=null;
         },{passive:true});
         trigger.addEventListener('pointercancel',function(){touchStart=null;},{passive:true});
@@ -642,12 +747,15 @@
           if(activeCard)activeCard.classList.remove('is-motion-active');
           active=null;activeCard=null;
           ctx.clearRect(0,0,metrics.width,metrics.height);
-        }else drawIdle(reduceQuery.matches);
+        }else drawIdle(performanceProfile.tier==='static');
       },{threshold:.05,rootMargin:'100px 0px'}).observe(section);
     }else visible=true;
-    subscribeMotion(function(allowed,reduced){
+    subscribeMotion(function(allowed,reduced,profile){
+      var tierChanged=activeProfileTier!==profile.tier;
+      activeProfileTier=profile.tier;
       if(!allowed&&frameId){cancelAnimationFrame(frameId);frameId=0;}
-      if(reduced||!allowed){active=null;if(activeCard)activeCard.classList.remove('is-motion-active');activeCard=null;drawIdle(reduced);}
+      if(tierChanged){active=null;if(activeCard)activeCard.classList.remove('is-motion-active');activeCard=null;resize();return;}
+      if(profile.tier==='static'||!allowed){active=null;if(activeCard)activeCard.classList.remove('is-motion-active');activeCard=null;drawIdle(profile.tier==='static');}
     });
     resize();
   })();
@@ -655,16 +763,18 @@
   // Project micro-motion shares one scheduler so only one thumbnail animates at a time.
   (function projectEffects(){
     var definitions=[
-      {id:'proj-bizsim',effect:'nodes',duration:760},
-      {id:'proj-exile',effect:'sparks',duration:680},
-      {id:'proj-dream',effect:'shockwave',duration:560},
-      {id:'proj-calli',effect:'ink',duration:960}
+      {id:'proj-bizsim',effect:'nodes',duration:MOTION.effect},
+      {id:'proj-exile',effect:'sparks',duration:MOTION.effect},
+      {id:'proj-dream',effect:'shockwave',duration:MOTION.slow},
+      {id:'proj-calli',effect:'ink',duration:MOTION.effectLong}
     ];
     var entries=[];
     var active=null;
     var frameId=0;
     var clearTimer=0;
     var previewQueue=[];
+    var lastFrame=0;
+    var activeProfileTier=performanceProfile.tier;
 
     definitions.forEach(function(definition){
       var project=document.getElementById(definition.id);
@@ -687,13 +797,13 @@
       },{passive:true});
       project.addEventListener('pointerup',function(event){
         if(event.pointerType!=='touch'||!entry.touchStart)return;
-        if(Math.hypot(event.clientX-entry.touchStart.x,event.clientY-entry.touchStart.y)<8)activate(entry);
+        if(Math.hypot(event.clientX-entry.touchStart.x,event.clientY-entry.touchStart.y)<MOTION.tapSlop)activate(entry);
         entry.touchStart=null;
       },{passive:true});
       project.addEventListener('pointercancel',function(){entry.touchStart=null;},{passive:true});
     });
 
-    function sizeEntry(entry){entry.metrics=canvasScale(entry.canvas,entry.ctx,window.innerWidth<650?1:1.5);}
+    function sizeEntry(entry){entry.metrics=canvasScale(entry.canvas,entry.ctx,performanceProfile);}
     function clearEntry(entry){
       if(!entry)return;
       if(entry.metrics)entry.ctx.clearRect(0,0,entry.metrics.width,entry.metrics.height);
@@ -776,13 +886,15 @@
     function render(time){
       frameId=0;
       if(!active||!motionAllowed())return;
+      if(performanceProfile.frameInterval&&time-lastFrame<performanceProfile.frameInterval){frameId=requestAnimationFrame(render);return;}
+      lastFrame=time;
       var progress=clamp((time-active.start)/active.entry.duration,0,1);
       drawActive(progress);
       if(progress<1)frameId=requestAnimationFrame(render);
       else clearTimer=window.setTimeout(function(){
         if(active){clearEntry(active.entry);active=null;}
         pumpPreviewQueue();
-      },120);
+      },MOTION.fast);
     }
 
     function activate(entry){
@@ -795,6 +907,7 @@
       entry.project.classList.add('is-fx-active');
       active={entry:entry,start:performance.now()};
       if(coarsePointerQuery.matches)entry.previewed=true;
+      lastFrame=0;
       frameId=requestAnimationFrame(render);
       return true;
     }
@@ -802,6 +915,7 @@
     function stopActive(){
       if(frameId)cancelAnimationFrame(frameId);
       frameId=0;
+      lastFrame=0;
       window.clearTimeout(clearTimer);
       if(active)clearEntry(active.entry);
       active=null;
@@ -830,9 +944,9 @@
           if(!entry.visible){
             previewQueue=previewQueue.filter(function(candidate){return candidate!==entry;});
             if(active&&active.entry===entry){stopActive();pumpPreviewQueue();}
-          }else if(coarsePointerQuery.matches&&observation.intersectionRatio>=.62)queuePreview(entry);
+          }else if(coarsePointerQuery.matches&&observation.intersectionRatio>=MOTION.commit)queuePreview(entry);
         });
-      },{threshold:[0,.62]});
+      },{threshold:[0,MOTION.commit]});
       entries.forEach(function(entry){observer.observe(entry.project);});
     }
 
@@ -845,7 +959,13 @@
       });
       entries.forEach(function(entry){projectResizeObserver.observe(entry.thumb);});
     }else window.addEventListener('resize',function(){entries.forEach(function(entry){if(entry.metrics)sizeEntry(entry);});},{passive:true});
-    subscribeMotion(function(allowed){
+    subscribeMotion(function(allowed,reduced,profile){
+      var tierChanged=activeProfileTier!==profile.tier;
+      activeProfileTier=profile.tier;
+      if(tierChanged&&active){
+        sizeEntry(active.entry);
+        if(!allowed)stopActive();
+      }
       if(!allowed){
         stopActive();
         entries.forEach(clearEntry);

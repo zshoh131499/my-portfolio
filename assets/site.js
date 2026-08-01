@@ -8,6 +8,69 @@ var lightboxImage=document.getElementById('lbImg');
 var lastLightboxTrigger=null;
 var lastY=window.scrollY;
 var pageRegions=[nav,document.querySelector('main'),document.querySelector('footer')];
+var UI_MOTION={base:280};
+
+function isStaticMotionMode(){
+  var tier=document.documentElement.dataset.motionProfile;
+  if(!tier&&window.siteMotion&&typeof window.siteMotion.getProfile==='function'){
+    try{
+      var profile=window.siteMotion.getProfile();
+      tier=profile&&profile.tier;
+    }catch(error){}
+  }
+  return tier==='static'||document.body.classList.contains('motion-static');
+}
+
+function setupRevealOnce(nodes,activeClass){
+  var items=Array.prototype.slice.call(nodes);
+  if(!items.length)return;
+  var observer=null;
+  var preferenceObserver=null;
+  var remaining=items.filter(function(item){return !item.classList.contains(activeClass);}).length;
+
+  function cleanup(){
+    if(observer)observer.disconnect();
+    if(preferenceObserver)preferenceObserver.disconnect();
+    if(motionQuery.removeEventListener)motionQuery.removeEventListener('change',handlePreferenceChange);
+  }
+
+  function reveal(item){
+    if(item.classList.contains(activeClass))return;
+    item.classList.add(activeClass);
+    remaining-=1;
+    if(observer)observer.unobserve(item);
+    if(remaining<=0)cleanup();
+  }
+
+  function revealAll(){items.forEach(reveal);cleanup();}
+
+  function handlePreferenceChange(){
+    if(motionQuery.matches||isStaticMotionMode())revealAll();
+  }
+
+  if(remaining<=0){cleanup();return;}
+  if(motionQuery.matches||isStaticMotionMode()||!('IntersectionObserver' in window)){
+    revealAll();
+    return;
+  }
+
+  observer=new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){if(entry.isIntersecting)reveal(entry.target);});
+  },{threshold:.18,rootMargin:'0px 0px -18% 0px'});
+  items.forEach(function(item){if(!item.classList.contains(activeClass))observer.observe(item);});
+
+  if(motionQuery.addEventListener)motionQuery.addEventListener('change',handlePreferenceChange);
+  if('MutationObserver' in window){
+    preferenceObserver=new MutationObserver(handlePreferenceChange);
+    preferenceObserver.observe(document.documentElement,{attributes:true,attributeFilter:['data-motion-profile']});
+    preferenceObserver.observe(document.body,{attributes:true,attributeFilter:['class']});
+  }
+}
+
+function setupDeferredReveals(){
+  setupRevealOnce(document.querySelectorAll('.tl-item'),'active');
+  setupRevealOnce(document.querySelectorAll('[data-reveal]'),'is-revealed');
+}
 
 function setPageInert(inert){
   pageRegions.forEach(function(region){if(region)region.toggleAttribute('inert',Boolean(inert));});
@@ -62,15 +125,59 @@ window.addEventListener('resize',function(){
   if(window.innerWidth>900)setMenu(false,false);
 });
 
-// Timeline reveal
+// Initialize reveals after all deferred scripts have established the motion profile.
+if(document.readyState==='complete')setupDeferredReveals();
+else document.addEventListener('DOMContentLoaded',setupDeferredReveals,{once:true});
+
+// Signal Lab uses an accessible single-select tablist. Hover remains CSS-only.
 (function(){
-  var items=document.querySelectorAll('.tl-item');
-  if(!items.length)return;
-  if(motionQuery.matches){items.forEach(function(item){item.classList.add('active');});return;}
-  var observer=new IntersectionObserver(function(entries){
-    entries.forEach(function(entry){entry.target.classList.toggle('active',entry.isIntersecting);});
-  },{threshold:.2,rootMargin:'0px 0px -20% 0px'});
-  items.forEach(function(item){observer.observe(item);});
+  var labs=document.querySelectorAll('[data-signal-lab]');
+  Array.prototype.forEach.call(labs,function(lab){
+    var steps=Array.prototype.slice.call(lab.querySelectorAll('[data-signal-step]'));
+    var panels=Array.prototype.slice.call(lab.querySelectorAll('[data-signal-panel]'));
+    var stage=lab.querySelector('.signal-stage')||lab;
+    if(!steps.length)return;
+
+    function selectStep(index,moveFocus){
+      index=(index+steps.length)%steps.length;
+      var activeStep=steps[index].dataset.signalStep;
+      lab.dataset.activeStep=activeStep;
+      stage.dataset.activeStep=activeStep;
+      steps.forEach(function(step,stepIndex){
+        var selected=stepIndex===index;
+        step.setAttribute('aria-selected',String(selected));
+        step.tabIndex=selected?0:-1;
+        step.classList.toggle('is-selected',selected);
+      });
+      panels.forEach(function(panel){
+        var selected=panel.dataset.signalPanel===activeStep;
+        panel.hidden=!selected;
+        panel.classList.toggle('is-selected',selected);
+      });
+      if(moveFocus)steps[index].focus();
+    }
+
+    var initialStep=lab.dataset.activeStep;
+    var initialIndex=steps.findIndex(function(step){return step.dataset.signalStep===initialStep;});
+    if(initialIndex<0)initialIndex=steps.findIndex(function(step){return step.getAttribute('aria-selected')==='true';});
+    selectStep(initialIndex<0?0:initialIndex,false);
+
+    steps.forEach(function(step,index){
+      step.addEventListener('focus',function(){selectStep(index,false);});
+      step.addEventListener('click',function(){selectStep(index,false);});
+      step.addEventListener('keydown',function(event){
+        var nextIndex=null;
+        if(event.key==='ArrowLeft'||event.key==='ArrowUp')nextIndex=index-1;
+        else if(event.key==='ArrowRight'||event.key==='ArrowDown')nextIndex=index+1;
+        else if(event.key==='Home')nextIndex=0;
+        else if(event.key==='End')nextIndex=steps.length-1;
+        else if(event.key==='Enter'||event.key===' '||event.key==='Spacebar')nextIndex=index;
+        if(nextIndex===null)return;
+        event.preventDefault();
+        selectStep(nextIndex,nextIndex!==index);
+      });
+    });
+  });
 })();
 
 // Anchored navigation with the fixed-header offset
@@ -128,7 +235,7 @@ document.addEventListener('click',function(event){
     var project=galleryButton.closest('.proj');
     var heroImage=project?project.querySelector('.proj-thumb img'):null;
     if(heroImage&&selectedImage){
-      heroImage.style.transition='opacity .3s,transform .3s';
+      heroImage.style.transition='opacity var(--motion-base) var(--ease-out),transform var(--motion-base) var(--ease-out)';
       heroImage.style.opacity='0';
       heroImage.style.transform='scale(1.05)';
       window.setTimeout(function(){
@@ -140,7 +247,7 @@ document.addEventListener('click',function(event){
         heroImage.height=Number(selectedImage.getAttribute('height'))||selectedImage.naturalHeight;
         heroImage.style.opacity='1';
         heroImage.style.transform='scale(1)';
-      },motionQuery.matches?0:250);
+      },motionQuery.matches?0:UI_MOTION.base);
     }
     var gallery=galleryButton.closest('.proj-gallery');
     if(gallery){
