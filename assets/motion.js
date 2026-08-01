@@ -35,8 +35,9 @@
 
   var motionButton=document.getElementById('motionToggle');
   function syncMotionButton(){
-    if(!motionButton)return;
     var systemReduced=reduceQuery.matches;
+    document.body.classList.toggle('motion-paused',userPaused||systemReduced);
+    if(!motionButton)return;
     motionButton.disabled=systemReduced;
     motionButton.setAttribute('aria-disabled',String(systemReduced));
     motionButton.setAttribute('aria-pressed',String(userPaused||systemReduced));

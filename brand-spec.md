@@ -25,6 +25,7 @@ The portfolio presents Toby as a multidisciplinary product designer who turns pa
 ## Motion language
 
 - Hero: a quiet, mist-like particle current drifts through loose Product, UX, Game, and VFX formations. Modes morph slowly without visible geometry guides; pointer and touch create a soft current rather than a hard collision. Scrolling gathers the field into a broad, staggered handoff above the featured project.
+- Tools: the technology list uses one low-contrast, continuous horizontal marquee. It pauses on hover, the global Pause Motion control, and `prefers-reduced-motion`.
 - Expertise: Product uses a grid, UX uses connected nodes, Game uses trajectories, and VFX uses energy ripples.
 - Projects: AI uses agent nodes, Game uses sparks, VFX uses a shockwave, and Calligraphy × 3D uses ink diffusion.
 - Effects are short, input-driven, and idle at zero animation frames. Mouse, touch, and keyboard focus receive equivalent responses.
