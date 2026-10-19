@@ -427,7 +427,7 @@ body::before{opacity:.018;background-size:5px 5px}
 }
 @media(max-width:900px){
   #proj-bizsim .proj-top{grid-template-columns:1fr;min-height:0}
-  #proj-bizsim .proj-thumb{min-height:300px}
+  #proj-bizsim .proj-thumb{min-height:300px;order:-1}
   .featured-case-kicker{align-items:flex-start}
 }
 @media(max-width:600px){
@@ -436,6 +436,9 @@ body::before{opacity:.018;background-size:5px 5px}
   #proj-bizsim .proj-thumb{min-height:230px}
   .featured-case-kicker{display:grid;gap:.35rem}
   .featured-case-kicker span:last-child{text-align:left}
+  .featured-actions{display:grid;grid-template-columns:1fr;gap:.5rem}
+  .featured-actions .proj-link{justify-content:center;min-height:44px;padding:.62rem .85rem;border-radius:6px;text-align:center}
+  .featured-actions .featured-secondary{border:1px solid rgba(255,245,235,.16)}
   .tools-section{padding:.6rem 0}
 }
 
