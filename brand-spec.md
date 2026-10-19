@@ -74,3 +74,12 @@ The enhancement layer sits on top of `motion.js` and borrows the vocabulary of a
 - Pause Motion tears the rich tier down and restores native scrolling and the CSS marquee; Static and `prefers-reduced-motion` skip both tiers. Menu and lightbox open states stop Lenis so focus trapping keeps working.
 - Reveals clear their inline styles on completion so the existing hover transforms keep working; hover zoom on thumbnails uses the `scale` property so it can coexist with GSAP transforms.
 - Contact adds a local-time clock for the current base and a copy-to-clipboard control with visible and announced feedback; both work without GSAP.
+
+## Hero fluid ink (`assets/fluid.js`)
+
+A compact WebGL stable-fluids solver (advection, vorticity confinement, Jacobi pressure solve) renders brand-colored ink over the hero. Pointer movement injects velocity and dye; the ink swirls, dissolves over roughly six seconds and the loop sleeps shortly after the last input, so the layer idles at zero frames.
+
+- Layering: the fluid canvas sits at z-index 3 between the particle field and the copy, blends with `screen`, fades toward the bottom of the hero, and dims the particle field to 30% while active.
+- Palette follows the selected discipline pill (Product mint, UX pool, Game purple, VFX coral); switching a pill fires a short burst in the new color, and hovering a pill previews its palette.
+- Profiles: Full runs a 128-cell simulation with a 720-wide dye buffer, Lite drops to 96 and 480, Static and reduced-motion never start it. A frame-time watchdog downgrades once and then disables the layer on slow GPUs.
+- Pause Motion, hidden tabs, open menus and the lightbox stop the loop and clear the canvas; touch pointers do not drive it.
