@@ -536,6 +536,13 @@ html[data-motion-profile="static"] .signal-lab[data-reveal] .signal-header,html[
 .nav-logo::after,.nav-links a::after,.proj-link::after{content:'';position:absolute;left:-.5rem;right:-.5rem;top:50%;height:max(44px,100%);transform:translateY(-50%)}
 .c-link{min-height:44px}
 .contact-email{display:inline-flex;align-items:center;min-height:44px;padding:0 .5rem}
+/* H. Scroll-spy: current section in the primary nav */
+.nav-links a[aria-current="true"]{color:var(--cream)}
+.nav-links a[aria-current="true"]::before{content:'';position:absolute;left:0;right:0;bottom:-.45rem;height:2px;border-radius:1px;background:var(--pool)}
+@media(max-width:900px){
+  .nav-links a[aria-current="true"]{color:var(--pool)}
+  .nav-links a[aria-current="true"]::before{display:none}
+}
 </style>
 </head>
 <body>

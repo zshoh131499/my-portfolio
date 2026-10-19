@@ -204,6 +204,35 @@ anchors.forEach(function(anchor){
   });
 });
 
+// Scroll-spy: flag the nav link whose section currently sits under the header
+(function(){
+  var links=Array.prototype.slice.call(navLinks.querySelectorAll('a[href^="#"]'));
+  var pairs=links.map(function(link){return {link:link,target:document.querySelector(link.getAttribute('href'))};}).filter(function(pair){return pair.target;});
+  if(!pairs.length)return;
+  var frame=0;
+  function update(){
+    frame=0;
+    var navHeight=nav.getBoundingClientRect().height||80;
+    var probe=navHeight+window.innerHeight*.25;
+    var atBottom=window.innerHeight+window.scrollY>=document.documentElement.scrollHeight-2;
+    var current=null;
+    pairs.forEach(function(pair){
+      var rect=pair.target.getBoundingClientRect();
+      if(rect.top<=probe&&rect.bottom>probe)current=pair;
+    });
+    if(atBottom)current=pairs[pairs.length-1];
+    pairs.forEach(function(pair){
+      if(pair===current)pair.link.setAttribute('aria-current','true');
+      else pair.link.removeAttribute('aria-current');
+    });
+  }
+  function schedule(){if(!frame)frame=window.requestAnimationFrame(update);}
+  window.addEventListener('scroll',schedule,{passive:true});
+  window.addEventListener('resize',schedule);
+  window.addEventListener('load',schedule);
+  schedule();
+})();
+
 function openLightbox(trigger,image){
   if(!image)return;
   setMenu(false,false);
