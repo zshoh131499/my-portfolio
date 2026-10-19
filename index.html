@@ -465,15 +465,13 @@ nav{transition:transform var(--motion-base) var(--ease-out)}
 .signal-header .stitle{margin-bottom:0}
 .signal-intro{max-width:38rem;justify-self:end;color:rgba(255,245,235,.6);font-size:1rem;line-height:1.8;text-wrap:pretty}
 .signal-stage{--route-scale:0;--signal-x:16.666%;--signal-y:22px;--cursor-color:var(--feedback-action);--cursor-shadow:rgba(0,212,255,.28);position:relative;margin-top:3rem;padding:2.4rem;border:1px solid rgba(255,245,235,.09);border-radius:10px;background:linear-gradient(135deg,rgba(255,245,235,.045),rgba(0,212,255,.018) 58%,rgba(94,234,212,.025));box-shadow:inset 0 1px 0 rgba(255,255,255,.035)}
-.signal-stage[data-active-step="prototype"]{--route-scale:.5;--signal-x:50%;--signal-y:50%;--cursor-color:var(--feedback-game);--cursor-shadow:rgba(192,132,252,.26)}
-.signal-stage[data-active-step="ship"]{--route-scale:1;--signal-x:83.333%;--signal-y:calc(100% - 22px);--cursor-color:var(--feedback-product);--cursor-shadow:rgba(94,234,212,.28)}
+.signal-stage[data-active-step="prototype"]{--route-scale:.5;--signal-x:50%;--signal-y:50%}
+.signal-stage[data-active-step="ship"]{--route-scale:1;--signal-x:83.333%;--signal-y:calc(100% - 22px)}
 .signal-rail{position:relative;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}
 .signal-rail::before{content:'';position:absolute;left:16.666%;right:16.666%;top:22px;height:1px;background:rgba(255,245,235,.12);pointer-events:none}
-.signal-progress{position:absolute;left:16.666%;top:22px;width:66.666%;height:1px;z-index:1;background:linear-gradient(90deg,var(--feedback-action),var(--feedback-product));transform:scaleX(var(--route-scale));transform-origin:left;transition:transform var(--motion-slow) var(--ease-out);pointer-events:none}
+.signal-progress{position:absolute;left:16.666%;top:22px;width:66.666%;height:1px;z-index:1;background:var(--feedback-action);transform:scaleX(var(--route-scale));transform-origin:left;transition:transform var(--motion-slow) var(--ease-out);pointer-events:none}
 .signal-cursor{position:absolute;left:var(--signal-x);top:18px;width:9px;height:9px;z-index:2;border-radius:50%;background:var(--cursor-color);box-shadow:0 0 12px var(--cursor-shadow);transform:translateX(-50%);transition:left var(--motion-slow) var(--ease-out),background var(--motion-fast) var(--ease-out),box-shadow var(--motion-fast) var(--ease-out);pointer-events:none}
 .signal-node{--node-color:var(--feedback-action);position:relative;z-index:3;display:grid;grid-template-rows:44px auto;justify-items:center;align-content:start;min-width:0;min-height:144px;padding:0 .75rem;border:0;background:transparent;color:rgba(255,245,235,.6);font:inherit;text-align:center;cursor:pointer;touch-action:manipulation}
-.signal-node[data-signal-step="prototype"]{--node-color:var(--feedback-game)}
-.signal-node[data-signal-step="ship"]{--node-color:var(--feedback-product)}
 .signal-dot{position:relative;width:44px;height:44px;border:1px solid rgba(255,245,235,.16);border-radius:50%;background:var(--surface-2);transition:border-color var(--motion-fast) var(--ease-out),background var(--motion-fast) var(--ease-out),transform var(--motion-base) var(--ease-out)}
 .signal-dot::after{content:'';position:absolute;left:50%;top:50%;width:6px;height:6px;border-radius:50%;background:currentColor;transform:translate(-50%,-50%) scale(.66);opacity:.56;transition:transform var(--motion-base) var(--ease-out),opacity var(--motion-fast) var(--ease-out),background var(--motion-fast) var(--ease-out)}
 .signal-node-copy{display:block;max-width:15rem;padding-top:1rem}
@@ -490,8 +488,6 @@ nav{transition:transform var(--motion-base) var(--ease-out)}
 .signal-panel{display:grid;grid-template-columns:minmax(220px,.8fr) minmax(0,1.2fr);gap:3rem;align-items:start;animation:signalPanelIn var(--motion-slow) var(--ease-out)}
 .signal-panel[hidden]{display:none}
 .signal-panel-kicker{margin-bottom:.75rem;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.18em;text-transform:uppercase;color:var(--feedback-action)}
-.signal-panel[data-signal-panel="prototype"] .signal-panel-kicker{color:var(--feedback-game)}
-.signal-panel[data-signal-panel="ship"] .signal-panel-kicker{color:var(--feedback-product)}
 .signal-panel h3{max-width:17ch;font-family:var(--font-display);font-size:clamp(1.55rem,3vw,2.35rem);line-height:1.08;text-wrap:balance}
 .signal-panel-detail>p{max-width:42rem;color:rgba(255,245,235,.62);font-size:.96rem;line-height:1.8;text-wrap:pretty}
 .signal-output{display:grid;grid-template-columns:auto 1fr;gap:1rem;align-items:baseline;margin-top:1.35rem;padding-top:1.1rem;border-top:1px solid rgba(255,245,235,.08)}
@@ -663,7 +659,7 @@ html[data-motion-profile="static"] .signal-lab[data-reveal] .signal-header,html[
         <div class="proj-top">
           <button class="proj-thumb" type="button" aria-label="Open Calligraphy and 3D image preview">
             <img id="calli-hero" src="assets/images/calligraphy-3d-hero.webp" alt="Chinese calligraphy transformed into a 3D exhibition environment" width="1400" height="599" loading="lazy" decoding="async">
-            <span class="proj-label label-ux">Exhibition · VFX</span>
+            <span class="proj-label label-vfx">Exhibition · VFX</span>
           </button>
           <div class="proj-info">
             <h3>Calligraphy × 3D</h3>
