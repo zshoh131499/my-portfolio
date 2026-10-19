@@ -63,3 +63,14 @@ The portfolio presents Toby as a multidisciplinary product designer who turns pa
 - Avoid adding new glow, pill, or looping-animation styles unless they replace an existing one.
 - Keep Hero particles low-contrast and organic: no permanent grids, straight connection networks, synchronized pulsing, or tightly collapsed landing points.
 - Maintain a 44 px target for interactive controls and a visible focus indicator.
+
+## Motion enhancements layer (`assets/enhance.js`)
+
+The enhancement layer sits on top of `motion.js` and borrows the vocabulary of award-winning typographic portfolios: smooth scrolling, masked text reveals, scroll-linked parallax, a cursor follower and magnetic controls. It never replaces the particle system and degrades to the CSS fallbacks when GSAP is unavailable.
+
+- Libraries: GSAP 3.13 core, ScrollTrigger and SplitText, plus Lenis 1.3 for smooth scrolling. All are pinned CDN builds; `html.no-enhance` marks a page where they failed to load.
+- **Base tier** (`html.is-enhanced`, any profile except Static): hero entrance choreography with masked headline lines, one-shot section reveals (titles split into masked lines on entry and reverted afterwards), project card wipe-ins, the experience timeline draw and the top scroll-progress line.
+- **Rich tier** (`html.is-rich`, fine pointer and motion not paused): Lenis smooth scroll, hero exit parallax, thumbnail parallax (images are oversized by 18% so no edge shows), the cursor follower with `View` / `Open` labels, magnetic CTAs and the scroll-velocity-driven tools marquee.
+- Pause Motion tears the rich tier down and restores native scrolling and the CSS marquee; Static and `prefers-reduced-motion` skip both tiers. Menu and lightbox open states stop Lenis so focus trapping keeps working.
+- Reveals clear their inline styles on completion so the existing hover transforms keep working; hover zoom on thumbnails uses the `scale` property so it can coexist with GSAP transforms.
+- Contact adds a local-time clock for the current base and a copy-to-clipboard control with visible and announced feedback; both work without GSAP.
