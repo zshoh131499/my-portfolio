@@ -25,7 +25,9 @@
 <meta name="twitter:description" content="Portfolio of Aicheng (Toby) Tang — a product designer and front-end builder who blends UI/UX, game design, and VFX art into shipped digital experiences.">
 <meta name="twitter:image" content="https://zshoh131499.github.io/my-portfolio/assets/images/og-image.jpg">
 <meta name="twitter:image:alt" content="Pixel-art city skyline at sunset, the hero scene of Toby Tang's portfolio">
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&amp;family=Anybody:wght@400;700;900&amp;family=Space+Mono:wght@400;700&amp;display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&amp;family=Anybody:wght@400;700;800;900&amp;family=Space+Mono:wght@400;700&amp;display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -562,7 +564,9 @@ html[data-motion-profile="static"] .signal-lab[data-reveal] .signal-header,html[
 
 <main id="main-content" tabindex="-1">
 <section class="hero" id="hero">
-  <video class="hero-video" muted loop playsinline preload="none" poster="assets/images/hero-bg-poster.webp" data-src="hero-bg.mp4" aria-hidden="true" tabindex="-1"></video>
+  <video class="hero-video" muted loop playsinline preload="none" poster="assets/images/hero-bg-poster.webp" aria-hidden="true" tabindex="-1">
+    <source src="hero-bg.mp4" type="video/mp4" media="(min-width: 900px)">
+  </video>
   <canvas class="hero-particle-field" id="heroParticleField" aria-hidden="true"></canvas>
   <div class="hero-overlay"></div>
   <div class="hero-content">
