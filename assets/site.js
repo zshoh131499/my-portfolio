@@ -5,6 +5,11 @@ var navLinks=document.getElementById('navLinks');
 var lightbox=document.getElementById('lightbox');
 var lightboxClose=document.getElementById('lightboxClose');
 var lightboxImage=document.getElementById('lbImg');
+var lightboxPrev=document.getElementById('lightboxPrev');
+var lightboxNext=document.getElementById('lightboxNext');
+var lightboxCaption=document.getElementById('lightboxCaption');
+var lightboxItems=[];
+var lightboxIndex=0;
 var lastLightboxTrigger=null;
 var lastY=window.scrollY;
 var pageRegions=[nav,document.querySelector('main'),document.querySelector('footer')];
@@ -204,12 +209,88 @@ anchors.forEach(function(anchor){
   });
 });
 
+// Scroll-spy: flag the nav link whose section currently sits under the header
+(function(){
+  var links=Array.prototype.slice.call(navLinks.querySelectorAll('a[href^="#"]'));
+  var pairs=links.map(function(link){return {link:link,target:document.querySelector(link.getAttribute('href'))};}).filter(function(pair){return pair.target;});
+  if(!pairs.length)return;
+  var frame=0;
+  function update(){
+    frame=0;
+    var navHeight=nav.getBoundingClientRect().height||80;
+    var probe=navHeight+window.innerHeight*.25;
+    var atBottom=window.innerHeight+window.scrollY>=document.documentElement.scrollHeight-2;
+    var current=null;
+    pairs.forEach(function(pair){
+      var rect=pair.target.getBoundingClientRect();
+      if(rect.top<=probe&&rect.bottom>probe)current=pair;
+    });
+    if(atBottom)current=pairs[pairs.length-1];
+    pairs.forEach(function(pair){
+      if(pair===current)pair.link.setAttribute('aria-current','true');
+      else pair.link.removeAttribute('aria-current');
+    });
+  }
+  function schedule(){if(!frame)frame=window.requestAnimationFrame(update);}
+  window.addEventListener('scroll',schedule,{passive:true});
+  window.addEventListener('resize',schedule);
+  window.addEventListener('load',schedule);
+  schedule();
+})();
+
+// Remember each project's original hero image so the lightbox can still page to it
+// after a gallery click has swapped the visible hero.
+Array.prototype.forEach.call(document.querySelectorAll('.proj .proj-thumb img'),function(image){
+  image.dataset.lightboxSrc=image.getAttribute('src');
+  image.dataset.lightboxAlt=image.alt;
+});
+
+function absoluteUrl(src){
+  try{return new URL(src,document.baseURI).href;}catch(error){return src;}
+}
+
+function collectLightboxItems(project,image){
+  var items=[];
+  function add(src,alt){
+    if(!src)return;
+    var href=absoluteUrl(src);
+    if(items.some(function(item){return item.href===href;}))return;
+    items.push({href:href,src:src,alt:alt||''});
+  }
+  if(project){
+    var hero=project.querySelector('.proj-thumb img');
+    if(hero)add(hero.dataset.lightboxSrc||hero.currentSrc||hero.src,hero.dataset.lightboxAlt||hero.alt);
+    Array.prototype.forEach.call(project.querySelectorAll('.gallery-thumb img'),function(thumb){add(thumb.currentSrc||thumb.src,thumb.alt);});
+  }
+  add(image.currentSrc||image.src,image.alt);
+  return items;
+}
+
+function showLightboxItem(index){
+  var count=lightboxItems.length;
+  if(!count)return;
+  lightboxIndex=(index+count)%count;
+  var item=lightboxItems[lightboxIndex];
+  lightboxImage.src=item.src;
+  lightboxImage.alt=item.alt||'Project image preview';
+  lightboxCaption.textContent=count>1?(item.alt||'Project image')+' \u00b7 '+(lightboxIndex+1)+' / '+count:item.alt;
+  lightboxPrev.hidden=count<2;
+  lightboxNext.hidden=count<2;
+}
+
+function stepLightbox(delta){
+  if(lightbox.hidden||lightboxItems.length<2)return;
+  showLightboxItem(lightboxIndex+delta);
+}
+
 function openLightbox(trigger,image){
   if(!image)return;
   setMenu(false,false);
   lastLightboxTrigger=trigger;
-  lightboxImage.src=image.currentSrc||image.src;
-  lightboxImage.alt=image.alt||'Project image preview';
+  lightboxItems=collectLightboxItems(trigger.closest('.proj'),image);
+  var currentHref=absoluteUrl(image.currentSrc||image.src);
+  var startIndex=lightboxItems.findIndex(function(item){return item.href===currentHref;});
+  showLightboxItem(startIndex<0?0:startIndex);
   lightbox.hidden=false;
   lightbox.classList.add('show');
   document.body.classList.add('lightbox-open');
@@ -222,6 +303,10 @@ function closeLightbox(restoreFocus){
   lightbox.classList.remove('show');
   lightbox.hidden=true;
   lightboxImage.removeAttribute('src');
+  lightboxCaption.textContent='';
+  lightboxItems=[];
+  lightboxPrev.hidden=true;
+  lightboxNext.hidden=true;
   setPageInert(false);
   if(restoreFocus&&lastLightboxTrigger){lastLightboxTrigger.focus();}
   document.body.classList.remove('lightbox-open');
@@ -264,10 +349,17 @@ document.addEventListener('click',function(event){
   var projectImageButton=event.target.closest('.proj-thumb');
   if(projectImageButton){openLightbox(projectImageButton,projectImageButton.querySelector('img'));return;}
 
+  if(event.target.closest('#lightboxPrev')){stepLightbox(-1);return;}
+  if(event.target.closest('#lightboxNext')){stepLightbox(1);return;}
   if(event.target===lightbox||event.target.closest('#lightboxClose')){closeLightbox(true);}
 });
 
 document.addEventListener('keydown',function(event){
+  if(!lightbox.hidden&&(event.key==='ArrowLeft'||event.key==='ArrowRight')){
+    event.preventDefault();
+    stepLightbox(event.key==='ArrowLeft'?-1:1);
+    return;
+  }
   if(event.key==='Escape'){
     if(!lightbox.hidden){event.preventDefault();closeLightbox(true);return;}
     if(menuBtn.getAttribute('aria-expanded')==='true'){event.preventDefault();setMenu(false,true);return;}

@@ -169,22 +169,28 @@
   (function manageHeroVideo(){
     var video=document.querySelector('.hero-video');
     if(!video)return;
+    // The 4 MB footage is desktop-only: below 900px the poster stands in and nothing
+    // is fetched. The <source media="(min-width: 900px)"> in the markup declares the same rule.
+    var footageQuery=window.matchMedia('(min-width: 900px)');
     var initialRect=video.getBoundingClientRect();
     var visible=initialRect.bottom>0&&initialRect.top<window.innerHeight;
+    var sourceLoaded=false;
     function ensureSource(){
-      if(video.getAttribute('src'))return;
-      var source=video.dataset.src;
-      if(!source)return;
-      video.src=source;
+      if(sourceLoaded)return;
+      sourceLoaded=true;
       video.load();
     }
     function sync(allowed){
-      if(allowed&&visible){
+      if(allowed&&visible&&footageQuery.matches){
         ensureSource();
         var playPromise=video.play();
         if(playPromise&&playPromise.catch)playPromise.catch(function(){});
       }else video.pause();
     }
+    onMediaChange(footageQuery,function(){
+      if(footageQuery.matches&&!video.currentSrc)sourceLoaded=false;
+      sync(motionAllowed());
+    });
     if('IntersectionObserver' in window){
       new IntersectionObserver(function(entries){
         visible=entries[0]?entries[0].isIntersecting:true;
