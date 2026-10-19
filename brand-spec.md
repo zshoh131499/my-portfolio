@@ -79,7 +79,8 @@ The enhancement layer sits on top of `motion.js` and borrows the vocabulary of a
 
 A compact WebGL stable-fluids solver (advection, vorticity confinement, Jacobi pressure solve) renders brand-colored ink over the hero. Pointer movement injects velocity and dye; the ink swirls, dissolves over roughly six seconds and the loop sleeps shortly after the last input, so the layer idles at zero frames.
 
-- Layering: the fluid canvas sits at z-index 3 between the particle field and the copy, blends with `screen`, fades toward the bottom of the hero, and dims the particle field to 30% while active.
+- Layering: the fluid canvas sits at z-index 3 between the particle field and the copy, blends with `screen`, and dims the particle field to 30% while active. Three intersecting masks keep the ink faint under the headline (left), away from the bright sun (centre) and off the CTAs (bottom), so it lives mostly in the dark sky and city on the right.
+- Brightness is tone-mapped with a hard cap (`OPACITY`, 0.42) so overlapping strokes saturate instead of washing the hero white; single strokes land around 0.3. Raise `OPACITY` or soften the masks to make it louder.
 - Palette follows the selected discipline pill (Product mint, UX pool, Game purple, VFX coral); switching a pill fires a short burst in the new color, and hovering a pill previews its palette.
 - Profiles: Full runs a 128-cell simulation with a 720-wide dye buffer, Lite drops to 96 and 480, Static and reduced-motion never start it. A frame-time watchdog downgrades once and then disables the layer on slow GPUs.
-- Pause Motion, hidden tabs, open menus and the lightbox stop the loop and clear the canvas; touch pointers do not drive it.
+- Pause Motion, hidden tabs, open menus and the lightbox freeze the current frame and resume where they left off; Static, reduced motion, coarse pointers, a lost context or a slow GPU tear the layer down and clear it. Touch pointers do not drive it.
