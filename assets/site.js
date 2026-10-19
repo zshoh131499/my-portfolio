@@ -198,7 +198,9 @@ anchors.forEach(function(anchor){
     if(fromMenu)setMenu(false,false);
     var navHeight=nav.getBoundingClientRect().height||80;
     var top=target.getBoundingClientRect().top+window.scrollY-navHeight;
-    window.scrollTo({top:Math.max(0,top),behavior:motionQuery.matches?'auto':'smooth'});
+    var smoothScroll=!motionQuery.matches;
+    var handled=Boolean(window.siteEnhance&&typeof window.siteEnhance.scrollTo==='function'&&window.siteEnhance.scrollTo(Math.max(0,top),smoothScroll));
+    if(!handled)window.scrollTo({top:Math.max(0,top),behavior:smoothScroll?'smooth':'auto'});
     history.pushState(null,'',href);
     if(this.classList.contains('skip-link'))target.focus({preventScroll:true});
     else if(fromMenu&&keyboardActivation){
@@ -374,3 +376,55 @@ window.addEventListener('hashchange',function(){
   if(lightbox.hidden)document.body.classList.remove('lightbox-open');
   if(menuBtn.getAttribute('aria-expanded')!=='true')document.body.classList.remove('menu-open');
 });
+
+// Contact: local time for the current base, refreshed each minute
+(function(){
+  var clock=document.getElementById('contactClock');
+  var timeEl=clock?clock.querySelector('time'):null;
+  if(!clock||!timeEl||typeof Intl==='undefined'||!Intl.DateTimeFormat)return;
+  var zone=clock.getAttribute('data-timezone')||'America/New_York';
+  var formatter;
+  try{formatter=new Intl.DateTimeFormat('en-US',{hour:'2-digit',minute:'2-digit',hour12:false,timeZone:zone});}
+  catch(error){formatter=new Intl.DateTimeFormat('en-US',{hour:'2-digit',minute:'2-digit',hour12:false});}
+  function tick(){
+    var now=new Date();
+    timeEl.textContent=formatter.format(now);
+    timeEl.setAttribute('datetime',now.toISOString());
+  }
+  tick();
+  window.setInterval(tick,30000);
+})();
+
+// Contact: copy the email address with visible and announced feedback
+(function(){
+  var button=document.getElementById('copyEmail');
+  var status=document.getElementById('copyStatus');
+  if(!button)return;
+  var original=button.textContent;
+  var resetTimer=0;
+  function announce(message){if(status)status.textContent=message;}
+  function fallbackCopy(text){
+    var field=document.createElement('textarea');
+    field.value=text;field.setAttribute('readonly','');field.style.position='fixed';field.style.opacity='0';
+    document.body.appendChild(field);field.select();
+    var ok=false;
+    try{ok=document.execCommand('copy');}catch(error){ok=false;}
+    document.body.removeChild(field);
+    return ok;
+  }
+  function done(ok){
+    button.textContent=ok?'Copied ✓':'Press ⌘C';
+    button.classList.toggle('is-copied',ok);
+    announce(ok?'Email address copied to clipboard':'Copy failed, the address is selected');
+    window.clearTimeout(resetTimer);
+    resetTimer=window.setTimeout(function(){button.textContent=original;button.classList.remove('is-copied');announce('');},1800);
+  }
+  button.addEventListener('click',function(){
+    var text=button.getAttribute('data-copy')||'';
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(function(){done(true);},function(){done(fallbackCopy(text));});
+    }else{
+      done(fallbackCopy(text));
+    }
+  });
+})();

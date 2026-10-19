@@ -63,3 +63,24 @@ The portfolio presents Toby as a multidisciplinary product designer who turns pa
 - Avoid adding new glow, pill, or looping-animation styles unless they replace an existing one.
 - Keep Hero particles low-contrast and organic: no permanent grids, straight connection networks, synchronized pulsing, or tightly collapsed landing points.
 - Maintain a 44 px target for interactive controls and a visible focus indicator.
+
+## Motion enhancements layer (`assets/enhance.js`)
+
+The enhancement layer sits on top of `motion.js` and borrows the vocabulary of award-winning typographic portfolios: smooth scrolling, masked text reveals, scroll-linked parallax, a cursor follower and magnetic controls. It never replaces the particle system and degrades to the CSS fallbacks when GSAP is unavailable.
+
+- Libraries: GSAP 3.13 core, ScrollTrigger and SplitText, plus Lenis 1.3 for smooth scrolling. All are pinned CDN builds; `html.no-enhance` marks a page where they failed to load.
+- **Base tier** (`html.is-enhanced`, any profile except Static): hero entrance choreography with masked headline lines, one-shot section reveals (titles split into masked lines on entry and reverted afterwards), project card wipe-ins, the experience timeline draw and the top scroll-progress line.
+- **Rich tier** (`html.is-rich`, fine pointer and motion not paused): Lenis smooth scroll, hero exit parallax, thumbnail parallax (images are oversized by 18% so no edge shows), the cursor follower with `View` / `Open` labels, magnetic CTAs and the scroll-velocity-driven tools marquee.
+- Pause Motion tears the rich tier down and restores native scrolling and the CSS marquee; Static and `prefers-reduced-motion` skip both tiers. Menu and lightbox open states stop Lenis so focus trapping keeps working.
+- Reveals clear their inline styles on completion so the existing hover transforms keep working; hover zoom on thumbnails uses the `scale` property so it can coexist with GSAP transforms.
+- Contact adds a local-time clock for the current base and a copy-to-clipboard control with visible and announced feedback; both work without GSAP.
+
+## Hero fluid ink (`assets/fluid.js`)
+
+A compact WebGL stable-fluids solver (advection, vorticity confinement, Jacobi pressure solve) renders brand-colored ink over the hero. Pointer movement injects velocity and dye; the ink swirls, dissolves over roughly six seconds and the loop sleeps shortly after the last input, so the layer idles at zero frames.
+
+- Layering: the fluid canvas sits at z-index 3 between the particle field and the copy, blends with `screen`, and dims the particle field to 30% while active. Three intersecting masks keep the ink faint under the headline (left), away from the bright sun (centre) and off the CTAs (bottom), so it lives mostly in the dark sky and city on the right.
+- Brightness is tone-mapped with a hard cap (`OPACITY`, 0.42) so overlapping strokes saturate instead of washing the hero white; single strokes land around 0.3. Raise `OPACITY` or soften the masks to make it louder.
+- Palette follows the selected discipline pill (Product mint, UX pool, Game purple, VFX coral); switching a pill fires a short burst in the new color, and hovering a pill previews its palette.
+- Profiles: Full runs a 128-cell simulation with a 720-wide dye buffer, Lite drops to 96 and 480, Static and reduced-motion never start it. A frame-time watchdog downgrades once and then disables the layer on slow GPUs.
+- Pause Motion, hidden tabs, open menus and the lightbox freeze the current frame and resume where they left off; Static, reduced motion, coarse pointers, a lost context or a slow GPU tear the layer down and clear it. Touch pointers do not drive it.
