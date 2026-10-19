@@ -579,14 +579,25 @@ html.is-rich .btn,html.is-rich .c-link,html.is-rich .hero-motion-toggle,html.is-
 html.is-rich .btn-primary:hover{transform:none}
 html.is-gsap-marquee .tools-track{animation:none!important;will-change:transform}
 .cursor{position:fixed;top:0;left:0;z-index:10001;pointer-events:none;opacity:0;transition:opacity var(--motion-base)}
-.cursor-ring{position:absolute;left:-14px;top:-14px;width:28px;height:28px;border-radius:50%;border:1px solid rgba(255,245,235,.55);background:rgba(255,245,235,0);transition:transform var(--motion-base) var(--ease-out),background-color var(--motion-base),border-color var(--motion-base),width var(--motion-base) var(--ease-out),height var(--motion-base) var(--ease-out),left var(--motion-base) var(--ease-out),top var(--motion-base) var(--ease-out)}
-.cursor-label{position:absolute;left:0;top:0;transform:translate(-50%,-50%) scale(.6);font-family:var(--font-mono);font-size:.58rem;font-weight:400;letter-spacing:.22em;text-indent:.22em;text-transform:uppercase;color:rgba(255,245,235,.92);opacity:0;white-space:nowrap;transition:opacity var(--motion-fast),transform var(--motion-base) var(--ease-out)}
 .cursor.is-visible{opacity:1}
-.cursor.is-active .cursor-ring{transform:scale(1.6);border-color:rgba(255,245,235,.85);background:rgba(255,245,235,.06)}
-.cursor.has-label .cursor-ring{left:-38px;top:-38px;width:76px;height:76px;background:rgba(7,14,43,.34);border-color:rgba(255,245,235,.32);backdrop-filter:blur(10px) saturate(1.2);-webkit-backdrop-filter:blur(10px) saturate(1.2);box-shadow:inset 0 0 0 1px rgba(255,245,235,.04),0 10px 30px rgba(0,0,0,.18);transform:none}
+@property --cube{syntax:'<length>';inherits:true;initial-value:16px}
+.cursor-scene{--cube:18px;position:absolute;left:0;top:0;width:0;height:0;perspective:380px;perspective-origin:50% 50%;transition:--cube var(--motion-base) var(--ease-out)}
+.cursor.is-active .cursor-scene{--cube:26px}
+.cursor.has-label .cursor-scene{--cube:68px}
+.cursor.is-down .cursor-scene{--cube:15px}
+.cursor.has-label.is-down .cursor-scene{--cube:62px}
+.cursor-spin{position:absolute;left:0;top:0;width:0;height:0;transform-style:preserve-3d}
+.cursor-cube{position:absolute;left:calc(var(--cube) / -2);top:calc(var(--cube) / -2);width:var(--cube);height:var(--cube);transform-style:preserve-3d}
+.cursor-face{position:absolute;inset:0;border:1px solid rgba(255,245,235,.72);background:linear-gradient(135deg,rgba(255,245,235,.24),rgba(255,245,235,.07) 46%,rgba(0,212,255,.18));box-shadow:inset 0 0 0 .5px rgba(255,255,255,.14),0 8px 22px rgba(7,14,43,.22)}
+.cursor-face.is-front{transform:translateZ(calc(var(--cube) / 2));background:linear-gradient(135deg,rgba(255,255,255,.36),rgba(255,245,235,.1) 42%,rgba(0,212,255,.2))}
+.cursor-face.is-front::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 26% 22%,rgba(255,255,255,.55),rgba(255,255,255,0) 44%)}
+.cursor-face.is-back{transform:rotateY(180deg) translateZ(calc(var(--cube) / 2))}
+.cursor-face.is-right{transform:rotateY(90deg) translateZ(calc(var(--cube) / 2))}
+.cursor-face.is-left{transform:rotateY(-90deg) translateZ(calc(var(--cube) / 2))}
+.cursor-face.is-top{transform:rotateX(90deg) translateZ(calc(var(--cube) / 2));background:linear-gradient(135deg,rgba(255,255,255,.3),rgba(255,245,235,.08) 50%,rgba(192,132,252,.16))}
+.cursor-face.is-bottom{transform:rotateX(-90deg) translateZ(calc(var(--cube) / 2))}
+.cursor-label{position:absolute;left:0;top:0;transform:translate(-50%,-50%) scale(.6);font-family:var(--font-mono);font-size:.58rem;font-weight:400;letter-spacing:.22em;text-indent:.22em;text-transform:uppercase;color:rgba(255,245,235,.95);text-shadow:0 1px 10px rgba(7,14,43,.7);opacity:0;white-space:nowrap;transition:opacity var(--motion-fast),transform var(--motion-base) var(--ease-out)}
 .cursor.has-label .cursor-label{opacity:1;transform:translate(-50%,-50%) scale(1)}
-.cursor.is-down .cursor-ring{transform:scale(.85)}
-.cursor.has-label.is-down .cursor-ring{transform:scale(.92)}
 html.has-cursor .proj-thumb,html.has-cursor .gallery-thumb{cursor:none}
 .contact-row{display:inline-flex;align-items:center;justify-content:center;gap:.6rem;flex-wrap:wrap}
 .contact-copy{display:inline-flex;align-items:center;gap:.4rem;min-height:44px;padding:0 .9rem;border:1px solid var(--border-strong);border-radius:6px;background:transparent;color:rgba(255,245,235,.72);font-family:var(--font-mono);font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;transition:color var(--motion-fast),border-color var(--motion-fast),background-color var(--motion-fast)}
