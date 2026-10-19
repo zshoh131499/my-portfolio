@@ -285,7 +285,7 @@ footer{padding:1.5rem 2.5rem;text-align:center;border-top:1px solid rgba(255,255
   nav.menu-open{height:100vh;height:100dvh;align-items:flex-start;overflow:hidden;transform:none;background:rgba(12,20,69,.985)}
   .about,.expertise,.projects,.experience-section,.education-section,.contact-section{padding:4rem 1.5rem}
   .nav-links{display:none;position:absolute;inset:0;height:100%;background:rgba(12,20,69,.97);flex-direction:column;align-items:stretch;justify-content:flex-start;gap:clamp(.75rem,2.4vh,1.5rem);z-index:99;padding:clamp(5.5rem,14vh,8rem) 1.5rem max(2rem,env(safe-area-inset-bottom));overflow-y:auto;overscroll-behavior:contain}
-  .nav-links.open{display:flex}.nav-links li{width:100%}.nav-links a{font-size:1.05rem;min-height:44px;display:flex;align-items:center;justify-content:center;width:100%}
+  .nav-links.open{display:flex}.nav-links li{width:100%}.nav-links a{font-size:1.05rem;min-height:44px;display:flex;align-items:center;justify-content:center;gap:.35em;width:100%}
   .menu-btn{display:flex}
   .edu-card{grid-template-columns:1fr}.edu-icon,.edu-logo{display:none}
 }
@@ -555,7 +555,7 @@ html[data-motion-profile="static"] .signal-lab[data-reveal] .signal-header,html[
     <li><a href="#expertise" >Expertise</a></li>
     <li><a href="#experience" >Experience</a></li>
     <li><a href="#contact" >Contact</a></li>
-  <li><a href="assets/aicheng-toby-tang-resume.pdf" download="Aicheng-Toby-Tang-Product-Engineer-Resume.pdf" target="_blank" rel="noopener noreferrer" style="color:var(--pool);font-weight:700">Resume ↗</a></li>
+  <li><a href="assets/aicheng-toby-tang-resume.pdf" download="Aicheng-Toby-Tang-Product-Engineer-Resume.pdf" target="_blank" rel="noopener noreferrer" style="color:var(--pool);font-weight:700">Resume <span class="ext-mark" aria-hidden="true">↗</span><span class="sr-only">(opens in new tab)</span></a></li>
   </ul>
   <button class="menu-btn" id="menuBtn" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="navLinks"><span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span></button>
 </nav>
@@ -593,9 +593,9 @@ html[data-motion-profile="static"] .signal-lab[data-reveal] .signal-header,html[
             <div class="proj-case-meta"><div><span>Role</span><strong>Product Design / Front-end</strong></div><div><span>Challenge</span><strong>Active case learning</strong></div><div><span>Outcome</span><strong>Live AI prototype</strong></div></div>
             <div class="proj-tags"><span>Product Strategy</span><span>Multi-Agent UX</span><span>React</span><span>FastAPI</span></div>
             <div class="featured-actions">
-              <a href="https://www.kaggle.com/competitions/gemma-4-good-hackathon/writeups/ai-business-simulator" class="proj-link featured-primary" target="_blank" rel="noopener noreferrer">Read Case Study →</a>
-              <a href="https://bizsimai.vercel.app/" class="proj-link featured-secondary" target="_blank" rel="noopener noreferrer">Live Demo →</a>
-              <a href="https://github.com/zhouheng0118/AI-Business-Simulator" class="proj-link featured-secondary" target="_blank" rel="noopener noreferrer">GitHub →</a>
+              <a href="https://www.kaggle.com/competitions/gemma-4-good-hackathon/writeups/ai-business-simulator" class="proj-link featured-primary" target="_blank" rel="noopener noreferrer">Read Case Study <span class="ext-mark" aria-hidden="true">↗</span><span class="sr-only">(opens in new tab)</span></a>
+              <a href="https://bizsimai.vercel.app/" class="proj-link featured-secondary" target="_blank" rel="noopener noreferrer">Live Demo <span class="ext-mark" aria-hidden="true">↗</span><span class="sr-only">(opens in new tab)</span></a>
+              <a href="https://github.com/zhouheng0118/AI-Business-Simulator" class="proj-link featured-secondary" target="_blank" rel="noopener noreferrer">GitHub <span class="ext-mark" aria-hidden="true">↗</span><span class="sr-only">(opens in new tab)</span></a>
             </div>
           </div>
           <button class="proj-thumb" type="button" aria-label="Open AI Business Simulator image preview">
@@ -622,7 +622,7 @@ html[data-motion-profile="static"] .signal-lab[data-reveal] .signal-header,html[
             <p>Built real-time UI VFX in Unity — HUD cues, damage/heal feedback, menu & combat prompts. Designed character skill VFX using Particle System, VFX Graph and Shader Graph.</p>
             <div class="proj-case-meta"><div><span>Role</span><strong>UI VFX Artist</strong></div><div><span>Challenge</span><strong>Readable combat feedback</strong></div><div><span>Outcome</span><strong>Shipped Unity effects</strong></div></div>
             <div class="proj-tags"><span>Unity</span><span>VFX Graph</span><span>Shader Graph</span><span>Particle System</span><span>Texture Atlasing</span></div>
-            <a href="https://apps.apple.com/ph/app/dream-raiders-2-wilds/id6743147434" class="proj-link" target="_blank" rel="noopener noreferrer">View Project →</a>
+            <a href="https://apps.apple.com/ph/app/dream-raiders-2-wilds/id6743147434" class="proj-link" target="_blank" rel="noopener noreferrer">View Project <span class="ext-mark" aria-hidden="true">↗</span><span class="sr-only">(opens in new tab)</span></a>
           </div>
         </div>
         <div class="proj-gallery" role="group" aria-label="Dream Raiders 2 image gallery">
@@ -638,7 +638,7 @@ html[data-motion-profile="static"] .signal-lab[data-reveal] .signal-header,html[
             <p>Lead concept 2D & 3D artist for an award-winning game. Designed concept art for environments, props, and characters. Won Excellence in Design at RPI GameFest '23.</p>
             <div class="proj-case-meta"><div><span>Role</span><strong>Lead 2D / 3D Artist</strong></div><div><span>Challenge</span><strong>Cohesive game world</strong></div><div><span>Outcome</span><strong>Excellence in Design</strong></div></div>
             <div class="proj-tags"><span>Game Design</span><span>Concept Art</span><span>3D Modeling</span><span>Texturing</span><span>UV Unwrap</span></div>
-            <a href="https://freestyle-exile.carrd.co/" class="proj-link" target="_blank" rel="noopener noreferrer">View Project →</a>
+            <a href="https://freestyle-exile.carrd.co/" class="proj-link" target="_blank" rel="noopener noreferrer">View Project <span class="ext-mark" aria-hidden="true">↗</span><span class="sr-only">(opens in new tab)</span></a>
           </div>
           <button class="proj-thumb" type="button" aria-label="Open Freestyle Exile image preview">
             <img id="exile-hero" src="assets/images/freestyle-exile-hero.webp" alt="Freestyle Exile environment concept art" width="794" height="446" loading="lazy" decoding="async">
@@ -663,7 +663,7 @@ html[data-motion-profile="static"] .signal-lab[data-reveal] .signal-header,html[
             <p>Combined traditional Chinese calligraphy with 3D animation at Collar Works gallery. Used Blender and Houdini to create ink painting shaders and textures.</p>
             <div class="proj-case-meta"><div><span>Role</span><strong>3D / VFX Artist</strong></div><div><span>Challenge</span><strong>Calligraphy as space</strong></div><div><span>Outcome</span><strong>Gallery exhibition</strong></div></div>
             <div class="proj-tags"><span>Blender</span><span>Houdini</span><span>Shader Dev</span><span>Installation Art</span></div>
-            <a href="https://tobytang.artstation.com/projects/RKnA2y" class="proj-link" target="_blank" rel="noopener noreferrer">View Project →</a>
+            <a href="https://tobytang.artstation.com/projects/RKnA2y" class="proj-link" target="_blank" rel="noopener noreferrer">View Project <span class="ext-mark" aria-hidden="true">↗</span><span class="sr-only">(opens in new tab)</span></a>
           </div>
         </div>
         <div class="proj-gallery" role="group" aria-label="Calligraphy and 3D image gallery">
@@ -795,7 +795,7 @@ html[data-motion-profile="static"] .signal-lab[data-reveal] .signal-header,html[
     <div class="stag">✦ Let's Connect</div>
     <h2 class="stitle">Ready to Build<br>Something Beautiful?</h2>
     <p class="contact-desc">Always open to new projects, creative ideas, or opportunities to be part of your vision.</p>
-    <div class="contact-btns"><a href="https://www.linkedin.com/in/aicheng-tang-8ba807297/" class="c-link" target="_blank" rel="noopener noreferrer"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg> LinkedIn</a><a href="https://tobytang.artstation.com/" class="c-link" target="_blank" rel="noopener noreferrer"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M0 17.723l2.027 3.505h.001a2.424 2.424 0 002.164 1.333h13.457l-2.792-4.838H0zm24-2.218a2.42 2.42 0 00-.468-1.442L14.356.464C13.878-.18 13.1.001 12.462.001H8.463l9.66 16.74h5.245c.422.001.634-.28.632-.236zM4.964 0L.463 7.818l2.026 3.51L8.964 0H4.964z"/></svg> ArtStation</a></div>
+    <div class="contact-btns"><a href="https://www.linkedin.com/in/aicheng-tang-8ba807297/" class="c-link" target="_blank" rel="noopener noreferrer"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg> LinkedIn <span class="ext-mark" aria-hidden="true">↗</span><span class="sr-only">(opens in new tab)</span></a><a href="https://tobytang.artstation.com/" class="c-link" target="_blank" rel="noopener noreferrer"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M0 17.723l2.027 3.505h.001a2.424 2.424 0 002.164 1.333h13.457l-2.792-4.838H0zm24-2.218a2.42 2.42 0 00-.468-1.442L14.356.464C13.878-.18 13.1.001 12.462.001H8.463l9.66 16.74h5.245c.422.001.634-.28.632-.236zM4.964 0L.463 7.818l2.026 3.51L8.964 0H4.964z"/></svg> ArtStation <span class="ext-mark" aria-hidden="true">↗</span><span class="sr-only">(opens in new tab)</span></a></div>
     <a href="mailto:taczuishuai@gmail.com" class="contact-email">taczuishuai@gmail.com</a>
   </div>
 </section>
