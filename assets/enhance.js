@@ -271,6 +271,8 @@
 
   function cursorFollower(){
     if(!pointerIsFine())return;
+    var LAYERS=7;
+    var PATH='M6 4 L26.5 17.2 L16.8 18.7 L21.6 28.6 L17.7 30.5 L12.8 20.6 L6 26.4 Z';
     var cursor=document.querySelector('.cursor');
     if(!cursor){
       cursor=document.createElement('div');
@@ -278,22 +280,27 @@
       cursor.setAttribute('aria-hidden','true');
       document.body.appendChild(cursor);
     }
-    if(!cursor.querySelector('.cursor-cube')){
-      cursor.innerHTML='<div class="cursor-scene"><div class="cursor-spin"><div class="cursor-cube">'+
-        ['front','back','right','left','top','bottom'].map(function(side){return '<i class="cursor-face is-'+side+'"></i>';}).join('')+
-        '</div></div></div><span class="cursor-label"></span>';
+    if(!cursor.querySelector('.cursor-arrow')){
+      var layers='';
+      for(var i=LAYERS-1;i>=0;i--){
+        var cls='arrow-layer'+(i===0?' is-front':'')+(i===LAYERS-1?' is-back':'');
+        var defs=i===0?'<defs><linearGradient id="cursorGlass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff" stop-opacity=".62"/><stop offset=".45" stop-color="#fff5eb" stop-opacity=".16"/><stop offset="1" stop-color="#00d4ff" stop-opacity=".36"/></linearGradient><radialGradient id="cursorShine" cx=".3" cy=".22" r=".5"><stop offset="0" stop-color="#ffffff" stop-opacity=".85"/><stop offset="1" stop-color="#ffffff" stop-opacity="0"/></radialGradient></defs>':'';
+        var shine=i===0?'<path class="arrow-shine" d="'+PATH+'"/>':'';
+        layers+='<svg class="'+cls+'" style="--i:'+i+'" viewBox="0 0 32 32" aria-hidden="true">'+defs+'<path d="'+PATH+'"/>'+shine+'</svg>';
+      }
+      cursor.innerHTML='<div class="cursor-scene"><div class="cursor-spin"><div class="cursor-arrow">'+layers+'</div></div></div><span class="cursor-label"></span>';
     }
     var label=cursor.querySelector('.cursor-label');
     var spin=cursor.querySelector('.cursor-spin');
-    var cube=cursor.querySelector('.cursor-cube');
-    var REST={x:-22,y:34};
-    var xTo=gsap.quickTo(cursor,'x',{duration:.3,ease:'power3'});
-    var yTo=gsap.quickTo(cursor,'y',{duration:.3,ease:'power3'});
-    gsap.set(cube,{rotationX:REST.x,rotationY:REST.y});
+    var arrow=cursor.querySelector('.cursor-arrow');
+    var REST={x:-16,y:24};
+    var xTo=gsap.quickTo(cursor,'x',{duration:.11,ease:'power2'});
+    var yTo=gsap.quickTo(cursor,'y',{duration:.11,ease:'power2'});
+    gsap.set(arrow,{transformOrigin:'18.75% 12.5%',rotationX:REST.x,rotationY:REST.y});
     gsap.set(spin,{rotationY:0});
-    var rxTo=gsap.quickTo(cube,'rotationX',{duration:.55,ease:'power3'});
-    var ryTo=gsap.quickTo(cube,'rotationY',{duration:.55,ease:'power3'});
-    var spinTween=gsap.to(spin,{rotationY:360,duration:11,ease:'none',repeat:-1,paused:true});
+    var rxTo=gsap.quickTo(arrow,'rotationX',{duration:.5,ease:'power3'});
+    var ryTo=gsap.quickTo(arrow,'rotationY',{duration:.5,ease:'power3'});
+    var wobble=gsap.to(spin,{rotationY:16,duration:1.9,ease:'sine.inOut',yoyo:true,repeat:-1,paused:true});
     var last=null;
     var settle=0;
     var labelFor=function(target){
@@ -306,27 +313,31 @@
     var isInteractive=function(target){
       return Boolean(target.closest('a, button, [role="button"], [role="tab"], input, textarea, select, summary'));
     };
-    var setSpinning=function(on){
+    var setWobble=function(on){
       if(on){
-        if(spinTween.paused())spinTween.play();
-      }else if(!spinTween.paused()){
-        spinTween.pause();
-        gsap.to(spin,{rotationY:0,duration:.7,ease:'power2.out',overwrite:true});
+        if(wobble.paused())wobble.play();
+      }else if(!wobble.paused()){
+        wobble.pause();
+        gsap.to(spin,{rotationY:0,duration:.6,ease:'power2.out',overwrite:true});
       }
     };
     var onMove=function(event){
       if(event.pointerType&&event.pointerType!=='mouse')return;
       xTo(event.clientX);yTo(event.clientY);
-      cursor.classList.add('is-visible');
+      if(!cursor.classList.contains('is-visible')){
+        gsap.set(cursor,{x:event.clientX,y:event.clientY});
+        cursor.classList.add('is-visible');
+        root.classList.add('cursor-live');
+      }
       if(last){
-        var vx=gsap.utils.clamp(-42,42,(event.clientX-last.x)*1.3);
-        var vy=gsap.utils.clamp(-42,42,(event.clientY-last.y)*1.3);
+        var vx=gsap.utils.clamp(-30,30,(event.clientX-last.x)*1.1);
+        var vy=gsap.utils.clamp(-30,30,(event.clientY-last.y)*1.1);
         ryTo(REST.y+vx);
         rxTo(REST.x-vy);
       }
       last={x:event.clientX,y:event.clientY};
       window.clearTimeout(settle);
-      settle=window.setTimeout(function(){rxTo(REST.x);ryTo(REST.y);},150);
+      settle=window.setTimeout(function(){rxTo(REST.x);ryTo(REST.y);},140);
     };
     var onOver=function(event){
       var target=event.target;
@@ -335,9 +346,15 @@
       cursor.classList.toggle('has-label',Boolean(text));
       cursor.classList.toggle('is-active',!text&&isInteractive(target));
       if(text)label.textContent=text;
-      setSpinning(Boolean(text));
+      setWobble(Boolean(text));
     };
-    var onLeave=function(){cursor.classList.remove('is-visible');};
+    var onLeave=function(){
+      cursor.classList.remove('is-visible');
+      root.classList.remove('cursor-live');
+    };
+    var onEnter=function(){
+      if(cursor.classList.contains('is-visible'))root.classList.add('cursor-live');
+    };
     var onDown=function(){cursor.classList.add('is-down');};
     var onUp=function(){cursor.classList.remove('is-down');};
     document.addEventListener('pointermove',onMove,{passive:true});
@@ -345,6 +362,7 @@
     document.addEventListener('pointerdown',onDown,{passive:true});
     document.addEventListener('pointerup',onUp,{passive:true});
     document.documentElement.addEventListener('mouseleave',onLeave);
+    document.documentElement.addEventListener('mouseenter',onEnter);
     root.classList.add('has-cursor');
     state.richCleanups.push(function(){
       document.removeEventListener('pointermove',onMove);
@@ -352,11 +370,12 @@
       document.removeEventListener('pointerdown',onDown);
       document.removeEventListener('pointerup',onUp);
       document.documentElement.removeEventListener('mouseleave',onLeave);
+      document.documentElement.removeEventListener('mouseenter',onEnter);
       window.clearTimeout(settle);
-      spinTween.kill();
-      gsap.killTweensOf([cursor,cube,spin]);
+      wobble.kill();
+      gsap.killTweensOf([cursor,arrow,spin]);
       cursor.classList.remove('is-visible','is-active','has-label','is-down');
-      root.classList.remove('has-cursor');
+      root.classList.remove('has-cursor','cursor-live');
     });
   }
 
