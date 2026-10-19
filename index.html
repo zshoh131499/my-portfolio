@@ -207,7 +207,7 @@ nav.hide{transform:translateY(-100%)}
 .lightbox{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.92);display:none;align-items:center;justify-content:center;cursor:zoom-out;backdrop-filter:blur(8px);animation:lbIn .3s ease;padding:4.5rem 1rem 1rem}
 .lightbox[hidden]{display:none!important}
 .lightbox.show{display:flex}
-.lightbox img{max-width:90vw;max-height:85vh;border-radius:12px;object-fit:contain;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.lightbox img{max-width:min(90vw,calc(100vw - 9rem));max-height:76vh;border-radius:12px;object-fit:contain;box-shadow:0 20px 60px rgba(0,0,0,.5)}
 .lightbox-close{position:absolute;top:1.5rem;right:2rem;font-size:1.5rem;color:var(--cream);cursor:pointer;width:44px;height:44px;border:1px solid rgba(255,255,255,.12);border-radius:50%;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;transition:background .3s;font-family:inherit}
 .lightbox-close:hover,.lightbox-close:focus-visible{background:rgba(255,255,255,.15)}
 @keyframes lbIn{from{opacity:0}to{opacity:1}}
@@ -543,6 +543,21 @@ html[data-motion-profile="static"] .signal-lab[data-reveal] .signal-header,html[
   .nav-links a[aria-current="true"]{color:var(--pool)}
   .nav-links a[aria-current="true"]::before{display:none}
 }
+/* I. Lightbox paging and caption */
+.lightbox-figure{display:flex;flex-direction:column;align-items:center;gap:.85rem;margin:0;max-width:100%;cursor:default}
+.lightbox-caption{max-width:60ch;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.12em;line-height:1.6;text-transform:uppercase;text-align:center;color:rgba(255,245,235,.72)}
+.lightbox-caption:empty{display:none}
+.lightbox-nav{position:absolute;top:50%;left:1.25rem;z-index:1;width:44px;height:44px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.12);border-radius:50%;background:rgba(255,255,255,.08);color:var(--cream);font-family:inherit;font-size:1.7rem;line-height:1;cursor:pointer;transform:translateY(-50%);transition:background var(--motion-fast) var(--ease-out)}
+.lightbox-next{left:auto;right:1.25rem}
+.lightbox-nav:hover,.lightbox-nav:focus-visible{background:rgba(255,255,255,.15)}
+.lightbox-nav[hidden]{display:none}
+@media(max-width:600px){
+  .lightbox{padding:4.5rem 1rem calc(4.75rem + env(safe-area-inset-bottom))}
+  .lightbox img{max-width:92vw;max-height:62vh}
+  .lightbox-nav{top:auto;bottom:max(1rem,env(safe-area-inset-bottom));transform:none}
+  .lightbox-prev{left:calc(50% - 58px)}
+  .lightbox-next{right:calc(50% - 58px)}
+}
 </style>
 </head>
 <body>
@@ -552,7 +567,12 @@ html[data-motion-profile="static"] .signal-lab[data-reveal] .signal-header,html[
 <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-labelledby="lightboxTitle" hidden>
   <h2 class="sr-only" id="lightboxTitle">Project image preview</h2>
   <button class="lightbox-close" id="lightboxClose" type="button" aria-label="Close image preview">✕</button>
-  <img id="lbImg" alt="">
+  <button class="lightbox-nav lightbox-prev" id="lightboxPrev" type="button" aria-label="Previous image" hidden>‹</button>
+  <figure class="lightbox-figure">
+    <img id="lbImg" alt="">
+    <figcaption class="lightbox-caption" id="lightboxCaption" aria-live="polite"></figcaption>
+  </figure>
+  <button class="lightbox-nav lightbox-next" id="lightboxNext" type="button" aria-label="Next image" hidden>›</button>
 </div>
 
 <nav id="nav" aria-label="Primary navigation">
