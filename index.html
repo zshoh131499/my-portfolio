@@ -163,7 +163,6 @@ nav.hide{transform:translateY(-100%)}
 .projects .section-note{max-width:680px;color:rgba(255,245,235,.6);font-size:1rem;line-height:1.8;margin-top:-.6rem;text-wrap:pretty}
 .projects-layout{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:1.1rem;margin-top:2.5rem}
 .proj{grid-column:span 4;border-radius:8px;overflow:hidden;background:rgba(255,255,255,.03);border:1px solid rgba(255,245,235,.07);transition:transform .35s cubic-bezier(.25,.46,.45,.94),border-color .35s,box-shadow .35s;display:flex;flex-direction:column;min-height:100%;box-shadow:inset 0 1px 0 rgba(255,255,255,.035)}
-.proj:hover{transform:translateY(-6px);border-color:rgba(255,245,235,.14);box-shadow:0 28px 80px rgba(0,0,0,.32)}
 #proj-bizsim{grid-column:1/-1;order:-1;background:linear-gradient(135deg,rgba(255,245,235,.055),rgba(94,234,212,.035) 46%,rgba(255,255,255,.02));border-color:rgba(255,245,235,.13)}
 .proj-top{display:flex;flex-direction:column;flex:1}
 #proj-bizsim .proj-top{display:grid;grid-template-columns:.9fr 1.15fr;min-height:460px}
@@ -345,7 +344,8 @@ body::before{opacity:.018;background-size:5px 5px}
 .about-badges .badge:hover{transform:none;box-shadow:none;opacity:1}
 .expertise-vfx{opacity:.2}
 .exp-card,.proj{transition:transform var(--motion-base) var(--ease-out),border-color var(--motion-base),box-shadow var(--motion-base),background var(--motion-base)}
-.exp-card:hover,.proj:hover{transform:translateY(-2px);box-shadow:var(--shadow-hover)}
+.exp-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-hover)}
+.proj:hover{transform:translateY(-2px);border-color:rgba(255,245,235,.14);box-shadow:var(--shadow-hover)}
 .exp-card-product:hover{box-shadow:var(--shadow-hover)}
 .exp-card-icon{border-radius:6px}
 .exp-card:hover .exp-tags span{background:transparent;color:rgba(255,245,235,.62)}
@@ -597,7 +597,7 @@ html[data-motion-profile="static"] .signal-lab[data-reveal] .signal-header,html[
   <div class="hero-overlay"></div>
   <div class="hero-content">
     <div class="hero-tag">Creative Multidisciplinarian ✦</div>
-    <h1><span class="line">Crafting</span><span class="line"><span class="accent">Dreams</span> Into</span><span class="line">Experiences.</span></h1>
+    <h1><span class="line">Crafting</span> <span class="line"><span class="accent">Dreams</span> Into</span> <span class="line">Experiences.</span></h1>
     <p class="sr-only" id="heroFlowHelp">Choose a discipline to gently reshape the decorative particle current.</p>
     <div class="hero-roles" role="group" aria-label="Explore design disciplines" aria-describedby="heroFlowHelp"><button class="role-pill role-product" type="button" data-flow-mode="product" aria-pressed="true">✦ Product Designer</button><button class="role-pill role-ux" type="button" data-flow-mode="ux" aria-pressed="false">◎ UI/UX Designer</button><button class="role-pill role-game" type="button" data-flow-mode="game" aria-pressed="false">◆ Game Designer</button><button class="role-pill role-vfx" type="button" data-flow-mode="vfx" aria-pressed="false">✦ VFX Artist</button></div>
     <p class="hero-desc">Blending user-centered design with visual artistry to craft immersive, unforgettable digital worlds.</p>
