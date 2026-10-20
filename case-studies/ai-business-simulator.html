@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Business Simulator — Product Case Study · Toby Tang</title>
+<meta name="description" content="How I designed a CEO-moderated, multi-agent case simulation that turns passive case reading into active investigation for first-year business students: context, role, key decisions, the interaction model, iteration and outcomes.">
+<meta name="author" content="Aicheng (Toby) Tang">
+<meta name="theme-color" content="#0c1445">
+<link rel="canonical" href="https://zshoh131499.github.io/my-portfolio/case-studies/ai-business-simulator.html">
+<link rel="icon" href="../assets/images/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../assets/images/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="../assets/images/apple-touch-icon.png">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Toby Tang Portfolio">
+<meta property="og:url" content="https://zshoh131499.github.io/my-portfolio/case-studies/ai-business-simulator.html">
+<meta property="og:title" content="AI Business Simulator — Product Case Study · Toby Tang">
+<meta property="og:description" content="A CEO-moderated, multi-agent case simulation for first-year business students. Product design and front-end case study: context, decisions, interaction model, iteration, outcome.">
+<meta property="og:image" content="https://zshoh131499.github.io/my-portfolio/assets/images/og-ai-business-simulator.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="AI Business Simulator student case library with assigned simulations and progress bars">
+<meta property="article:author" content="Aicheng (Toby) Tang">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="AI Business Simulator — Product Case Study · Toby Tang">
+<meta name="twitter:description" content="A CEO-moderated, multi-agent case simulation for first-year business students. Product design and front-end case study.">
+<meta name="twitter:image" content="https://zshoh131499.github.io/my-portfolio/assets/images/og-ai-business-simulator.jpg">
+<meta name="twitter:image:alt" content="AI Business Simulator student case library with assigned simulations and progress bars">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&amp;family=Anybody:wght@700;800;900&amp;family=Space+Mono:wght@400;700&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/case-study.css">
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to main content</a>
+<div class="scroll-progress" aria-hidden="true"></div>
+
+<!-- Lightbox (behaviour lives in assets/site.js) -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-labelledby="lightboxTitle" hidden>
+  <h2 class="sr-only" id="lightboxTitle">Project image preview</h2>
+  <button class="lightbox-close" id="lightboxClose" type="button" aria-label="Close image preview">✕</button>
+  <button class="lightbox-nav lightbox-prev" id="lightboxPrev" type="button" aria-label="Previous image" hidden>‹</button>
+  <figure class="lightbox-figure">
+    <img id="lbImg" alt="">
+    <figcaption class="lightbox-caption" id="lightboxCaption" aria-live="polite"></figcaption>
+  </figure>
+  <button class="lightbox-nav lightbox-next" id="lightboxNext" type="button" aria-label="Next image" hidden>›</button>
+</div>
+
+<nav id="nav" aria-label="Primary navigation">
+  <a class="nav-logo" href="../index.html">TOBY TANG</a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="../index.html#projects" aria-current="true">Selected Work</a></li>
+    <li><a href="../index.html#about">About</a></li>
+    <li><a href="../index.html#expertise">Expertise</a></li>
+    <li><a href="../index.html#experience">Experience</a></li>
+    <li><a href="../index.html#contact">Contact</a></li>
+    <li><a href="../assets/aicheng-toby-tang-resume.pdf" download="Aicheng-Toby-Tang-Product-Engineer-Resume.pdf" target="_blank" rel="noopener noreferrer" style="color:var(--pool);font-weight:700">Resume <span class="ext-mark" aria-hidden="true">↗</span><span class="sr-only">(opens in new tab)</span></a></li>
+  </ul>
+  <button class="menu-btn" id="menuBtn" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="navLinks"><span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span></button>
+</nav>
+
+<main id="main-content" tabindex="-1" data-lightbox-group>
+
+<header class="case-hero" id="hero">
+  <div class="case-hero-inner">
+    <p class="case-crumbs" data-hero-extra><a href="../index.html#projects">Selected Work</a><span aria-hidden="true">/</span><span aria-current="page">Product Case Study</span></p>
+    <div class="case-hero-grid">
+      <div>
+        <div class="hero-tag">✦ Featured Product Case</div>
+        <h1><span class="line"><span class="accent">AI Business</span></span> <span class="line">Simulator</span></h1>
+        <p class="hero-desc">An agent-led learning platform that turns passive case reading into active investigation. Students interview AI stakeholders, build an evidence board and defend a recommendation to a CEO moderator, one mission at a time.</p>
+        <div class="hero-cta">
+          <a href="https://bizsimai.vercel.app/" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Live Demo <span class="ext-mark" aria-hidden="true">↗</span><span class="sr-only">(opens in new tab)</span></a>
+          <a href="https://github.com/zhouheng0118/AI-Business-Simulator" class="btn btn-ghost" target="_blank" rel="noopener noreferrer">GitHub <span class="ext-mark" aria-hidden="true">↗</span><span class="sr-only">(opens in new tab)</span></a>
+          <a href="https://www.kaggle.com/competitions/gemma-4-good-hackathon/writeups/ai-business-simulator" class="case-writeup-link" target="_blank" rel="noopener noreferrer" data-hero-extra>Original writeup on Kaggle <span class="ext-mark" aria-hidden="true">↗</span><span class="sr-only">(opens in new tab)</span></a>
+        </div>
+      </div>
+      <dl class="case-meta" data-hero-extra>
+        <div><dt>Role</dt><dd>Product design · Front-end · Mission system</dd></div>
+        <div><dt>Timeline</dt><dd>Gemma 4 Good Hackathon, spring 2026 · writeup published May 18, 2026 <span class="need-inline" data-need>[NEED: start date and total duration]</span></dd></div>
+        <div><dt>Team</dt><dd>5 · Luo Yifei, Toby Tang, Zhouheng Tao, Evan Bao, Rex Gu</dd></div>
+        <div><dt>Stack</dt><dd>Next.js 14 · React 18 · TypeScript · Tailwind · FastAPI · Supabase · Gemma 4 · Vercel</dd></div>
+      </dl>
+    </div>
+  </div>
+  <figure class="case-figure case-hero-figure" data-hero-extra>
+    <button class="case-figure-btn" type="button" data-lightbox-item data-cursor="View" aria-label="Open the student case library screenshot in a larger preview">
+      <img src="../assets/images/ai-business-simulator-hero.webp" alt="Student case library listing assigned simulations, each with a completion percentage and difficulty tag" width="2000" height="1007" fetchpriority="high" decoding="async">
+    </button>
+    <figcaption><b>Fig. 01</b> Student case library. Every assigned simulation shows where you left off, so the first screen is a to-do list, not a reading list.</figcaption>
+  </figure>
+  <button class="hero-motion-toggle" id="motionToggle" type="button" aria-pressed="false">Pause motion</button>
+</header>
+
+<div class="case-layout">
+  <div class="case-layout-inner">
+
+    <nav class="case-toc" id="caseToc" aria-label="Case study sections" data-open="false">
+      <button class="case-toc-toggle" type="button" aria-expanded="false" aria-controls="caseTocList"><span>Contents</span><span class="case-toc-current" aria-hidden="true"></span><span class="case-toc-chevron" aria-hidden="true"></span></button>
+      <p class="case-toc-heading" aria-hidden="true">Contents</p>
+      <ol class="case-toc-list" id="caseTocList">
+        <li><a href="#context" data-title="Context"><span aria-hidden="true">01</span>Context</a></li>
+        <li><a href="#role" data-title="My role"><span aria-hidden="true">02</span>My role</a></li>
+        <li><a href="#decisions" data-title="Key decisions"><span aria-hidden="true">03</span>Key decisions</a></li>
+        <li><a href="#interaction" data-title="Multi-agent interaction"><span aria-hidden="true">04</span>Multi-agent interaction</a></li>
+        <li><a href="#iteration" data-title="Iteration"><span aria-hidden="true">05</span>Iteration</a></li>
+        <li><a href="#outcome" data-title="Outcome"><span aria-hidden="true">06</span>Outcome</a></li>
+        <li><a href="#next" data-title="What I'd do next"><span aria-hidden="true">07</span>What I'd do next</a></li>
+      </ol>
+      <p class="case-toc-back"><a href="../index.html#projects"><span aria-hidden="true">←</span> Back to work</a></p>
+    </nav>
+
+    <article class="case-article">
+
+      <section class="case-section" id="context" aria-labelledby="context-title">
+        <div class="stag">✦ 01 · Context</div>
+        <h2 class="stitle" id="context-title">The case method, minus the on-ramp</h2>
+        <p class="case-lede">Business schools teach through cases. For a first-year student who has not picked a major yet, a twenty-page case and the instruction “write a recommendation” is a wall, not a door.</p>
+        <div class="case-body" data-fade-children>
+          <p>Introductory business courses use case studies to show what strategy, finance, marketing and operations feel like in practice. The format assumes skills the audience does not have yet: how to interrogate a business problem, how to tell evidence from noise, how to build a recommendation under uncertainty. Freshmen read the whole case, feel lost, and either guess or outsource the thinking.</p>
+          <p>Instructors have the mirror-image problem. They can only see the output. With AI tools a student can summarise the reading and generate a plausible report without ever engaging with the material, and a grader cannot tell the difference. The process, which is the thing worth teaching, is invisible.</p>
+          <p>Our brief for the Gemma 4 Good Hackathon was to turn a case into something you <strong>do</strong>: an investigation with a moderator, stakeholders who hold different pieces of the truth, and a record of how the student got to their answer. We built it for two people.</p>
+          <div class="case-personas">
+            <div class="case-persona"><span>Primary</span><h3>The first-year student</h3><p>In an intro course, undecided about a major, has never run a case. Needs a path through the problem and feedback on how they investigated, not just whether they were right.</p></div>
+            <div class="case-persona"><span>Secondary</span><h3>The instructor</h3><p>Has a syllabus and their own case materials. Needs to author without a developer, publish to a class, and see each student's inquiry path, blind spots and reasoning rather than a final PDF.</p></div>
+          </div>
+          <div class="case-need" role="note" data-need>[NEED: who we talked to before building. Any instructor interviews, student conversations or class observations that shaped this framing, and the one or two things they said that stuck.]</div>
+          <div class="case-two-col">
+            <figure class="case-figure">
+              <button class="case-figure-btn" type="button" data-lightbox-item data-cursor="View" aria-label="Open the case brief screenshot in a larger preview">
+                <img src="../assets/images/ai-business-simulator-case-detail.webp" alt="Case brief for Spotify's India expansion: background, learning objectives, the decision question, five interviewees and a three-step explanation of how it works" width="839" height="1267" loading="lazy" decoding="async">
+              </button>
+              <figcaption><b>Fig. 02</b> The case brief a student sees before starting.</figcaption>
+            </figure>
+            <ol class="case-callouts">
+              <li><strong>Background, kept short</strong>Enough context to care, not enough to answer. The rest is held by the stakeholders.</li>
+              <li><strong>One objective question</strong>“Should Spotify keep investing in India, and how?” The whole simulation points at this.</li>
+              <li><strong>Interviewees with a remit</strong>Each card says what that person knows, so a student can plan an investigation instead of guessing who to ask.</li>
+              <li><strong>How it works, in three steps</strong>Interview, build evidence, submit and get a debrief. The loop is explained before it starts.</li>
+            </ol>
+          </div>
+        </div>
+      </section>
+
+      <section class="case-section" id="role" aria-labelledby="role-title">
+        <div class="stag">✦ 02 · My role</div>
+        <h2 class="stitle" id="role-title">Product design and the front end</h2>
+        <div class="case-body" data-fade-children>
+          <p>I owned the product experience: the student and instructor flows, the interaction model between the CEO moderator and the stakeholder agents, and the screens that carry it, from the case library to the interview room. I also built the front end in Next.js and React, and I shipped the overhaul that introduced the mission system and the redesigned interface, the change that gave the simulation its spine.</p>
+          <p>We were a team of five working in a compressed hackathon window, so roles overlapped. The split below is reconstructed from the repository history and needs confirming.</p>
+          <ul>
+            <li><strong>Toby Tang</strong> · product design, front end, multi-agent orchestration overhaul and mission system.</li>
+            <li><strong>Zhouheng Tao</strong> · repository owner; backend, model client and key pool, Docker and Vercel deployment <span class="need-inline" data-need>[NEED: confirm]</span></li>
+            <li><strong>Luo Yifei</strong> · mission flow and follow-up strategy refactor, scoring, API refactor <span class="need-inline" data-need>[NEED: confirm]</span></li>
+            <li><strong>Rex Gu</strong> · instructor analytics dashboards and the citation flow <span class="need-inline" data-need>[NEED: confirm]</span></li>
+            <li><strong>Evan Bao</strong> · <span class="need-inline" data-need>[NEED: Evan's area]</span></li>
+          </ul>
+          <div class="case-need" role="note" data-need>[NEED: how design decisions were made in the team. Did I run design reviews, share Figma, or decide in code? One sentence on the working rhythm.]</div>
+        </div>
+      </section>
+
+      <section class="case-section" id="decisions" aria-labelledby="decisions-title">
+        <div class="stag">✦ 03 · Key decisions</div>
+        <h2 class="stitle" id="decisions-title">Four calls that shaped the product</h2>
+        <p class="case-lede">Each of these cost us something. I have tried to be honest about what, and why we paid it anyway.</p>
+        <div class="case-body" data-fade-children>
+          <ol class="case-decisions">
+            <li class="case-decision">
+              <div class="case-decision-head"><span aria-hidden="true"></span><h3>One moderator, not a free-for-all</h3></div>
+              <dl>
+                <dt>The call</dt><dd>Every student goes through a CEO agent that briefs the mission, decides which stakeholders are open, and judges the report. You cannot interview a stakeholder the CEO has not activated; you get sent back. Five missions, in sequence, then the final answer.</dd>
+                <dt>The trade-off</dt><dd>Less freedom. A blocked stakeholder is a visible “no”, and some students will find the gating restrictive when they already know who they want to talk to.</dd>
+                <dt>Why</dt><dd>Without a spine, an open chat with five role-play bots is just ChatGPT with costumes: students skip to “what's the answer?”. The mission structure is also what makes the process gradeable. <strong>Mission completion is 60 of the 100 points</strong>, so the structure is the assessment.</dd>
+              </dl>
+            </li>
+            <li class="case-decision">
+              <div class="case-decision-head"><span aria-hidden="true"></span><h3>Hide the answer in layers, not in instructions</h3></div>
+              <dl>
+                <dt>The call</dt><dd>The generated playbook splits each case into small facts (“info atoms”) with access levels. L1 is free. L2 opens after you have interviewed at least one other role, L3 after two, and each atom can carry a natural-language unlock condition. Locked text never enters a prompt. The model cannot leak what it does not have.</dd>
+                <dt>The trade-off</dt><dd>Agents sometimes have to deflect, which can read as friction or as a bug. Instructors get a richer but more complex artefact to review.</dd>
+                <dt>Why</dt><dd>“Please don't reveal X” is not a boundary; students will pry it open in three messages. Layering is what turns an interview into an investigation: the CFO will not discuss cash-flow risk until you have heard Operations describe the launch plan. In the interface I turned the boundary into a feature with the <strong>“You can ask about”</strong> chips, so a deflection reads as character, not as failure.</dd>
+              </dl>
+            </li>
+            <li class="case-decision">
+              <div class="case-decision-head"><span aria-hidden="true"></span><h3>Instructors author from their own materials</h3></div>
+              <dl>
+                <dt>The call</dt><dd>No fixed catalogue. An instructor uploads or pastes their case (PDF, Markdown, text, optionally a spreadsheet), picks a case type and difficulty, names the teaching goals, and the system generates a playbook: roles, information boundaries, missions, final questions and a scoring rubric. They review and edit before publishing.</dd>
+                <dt>The trade-off</dt><dd>Generation quality varies, the review step adds time, and the form has to explain what is about to be generated to someone who has never heard of a “playbook”.</dd>
+                <dt>Why</dt><dd>Adoption. Instructors keep the syllabus and the cases they already trust; we fit into a course instead of asking for a new one. For a hackathon framed around social good, something a teacher can use next semester mattered more than a prettier demo.</dd>
+              </dl>
+            </li>
+            <li class="case-decision">
+              <div class="case-decision-head"><span aria-hidden="true"></span><h3>Score the process, not just the answer</h3></div>
+              <dl>
+                <dt>The call</dt><dd>100 points: 60 for mission completion, 40 for the final reflection, scored against the rubric. The debrief replays the interview path, lists the evidence found and the evidence missed, and comments on question quality.</dd>
+                <dt>The trade-off</dt><dd>Rubric scoring by a model is a judgement, not a measurement, and the heuristics are gameable: a “report” is detected by length and phrasing, and a confident paragraph can look like an analysis.</dd>
+                <dt>Why</dt><dd>The point of the product is to make inquiry visible. For the student, feedback on <strong>how</strong> they investigated is the lesson. For the instructor, a process record is the answer to AI-written reports.</dd>
+              </dl>
+            </li>
+          </ol>
+          <figure class="case-figure">
+            <button class="case-figure-btn" type="button" data-lightbox-item data-cursor="View" aria-label="Open the create-simulation form screenshot in a larger preview">
+              <img src="../assets/images/ai-business-simulator-create-simulation.webp" alt="Create-simulation form with title, description, teaching goals, case type and difficulty choices, course material and financial data upload zones, and a disabled Generate Playbook with AI button that lists what is still missing" width="2000" height="759" loading="lazy" decoding="async">
+            </button>
+            <figcaption><b>Fig. 03</b> Authoring. Three steps, teaching goals as chips, and a generate button that says exactly what is missing before it will enable.</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="case-section" id="interaction" aria-labelledby="interaction-title">
+        <div class="stag">✦ 04 · Multi-agent interaction design</div>
+        <h2 class="stitle" id="interaction-title">A moderator, five stakeholders, one student</h2>
+        <p class="case-lede">The hard design problem was not any single agent. It was making a conversation with six AI characters feel like one coherent place with rules you can learn.</p>
+        <div class="case-body" data-fade-children>
+          <p>The model I landed on is a loop with a host. The CEO holds the script. Stakeholders hold the facts. The student moves between them, and every move is visible in the interface.</p>
+          <ol class="case-flow" aria-label="Mission loop">
+            <li><span class="case-flow-dot" aria-hidden="true">01</span><strong>Brief</strong><small>The CEO sets the task, names who to see and what to bring back.</small></li>
+            <li><span class="case-flow-dot" aria-hidden="true">02</span><strong>Investigate</strong><small>Interview the activated stakeholders. Evidence is extracted to the board as you go.</small></li>
+            <li><span class="case-flow-dot" aria-hidden="true">03</span><strong>Report</strong><small>Summarise findings and a position to the CEO.</small></li>
+            <li class="is-loop"><span class="case-flow-dot" aria-hidden="true">04</span><strong>Verdict</strong><small>Checked against the evidence actually collected. Advance, or go back with a reason.</small></li>
+            <li class="is-end"><span class="case-flow-dot" aria-hidden="true">05</span><strong>Debrief</strong><small>After five missions: final answers with citations, scored, with blind spots.</small></li>
+          </ol>
+          <p class="case-flow-loop" aria-label="Steps one to four repeat for five missions">↻ Steps 01–04 repeat × 5 missions</p>
+          <h3>The CEO has three modes, and never asks questions</h3>
+          <p>A moderator that chats is a moderator that gets argued with. So the CEO only ever does one of three things, and the interface makes the current one legible.</p>
+          <div class="case-modes">
+            <div class="case-mode"><span>Briefing</span><p>Opens a mission: the deliverable, the stakeholders it activates, the handoff text pinned in the right rail.</p></div>
+            <div class="case-mode"><span>Evaluating</span><p>Triggered when a message reads like a report. Issues a verdict grounded in the evidence board. Advancement is fail-closed: no explicit “complete”, no progress.</p></div>
+            <div class="case-mode"><span>Redirecting</span><p>Everything else. Points the student back to the mission instead of answering for them.</p></div>
+          </div>
+          <figure class="case-figure">
+            <button class="case-figure-btn" type="button" data-lightbox-item data-cursor="View" aria-label="Open the interview screen screenshot in a larger preview">
+              <img src="../assets/images/ai-business-simulator-cfo-agent.webp" alt="Interview screen: a stakeholder rail on the left with the CEO marked as orchestrator, a CFO agent card with suggested topics, the chat thread in the centre, and an investigation roadmap with the current mission handoff on the right" width="2000" height="1007" loading="lazy" decoding="async">
+            </button>
+            <figcaption><b>Fig. 04</b> The interview room. Who you can talk to, what they know, where you are in the roadmap and what the CEO is waiting for, all on one screen.</figcaption>
+          </figure>
+          <h3>Anatomy of the interview room</h3>
+          <ol class="case-callouts">
+            <li><strong>Stakeholder rail</strong>The CEO is labelled as the orchestrator and sits apart. Activated stakeholders are live; the rest stay listed so the student can see what is coming.</li>
+            <li><strong>Agent card with a remit</strong>A one-line persona and “You can ask about” chips. The chips are the public edge of the information boundary: they make a good first question obvious and make a deflection feel in character.</li>
+            <li><strong>The thread</strong>Replies stream in with a thinking indicator timed to the unlock check, so a pause reads as the character considering rather than the app stalling.</li>
+            <li><strong>Roadmap and handoff</strong>“Mission 1 of 5”, the current brief, and “Report back to CEO when done”. Orientation is persistent, because the most common failure in multi-agent chat is not knowing what you are supposed to be doing.</li>
+          </ol>
+          <h3>Agents nudge instead of lecture</h3>
+          <p>Each stakeholder picks a follow-up strategy per turn from an ordered list, and the first one that applies wins: validate what the student just said, probe toward a locked fact, pose a calculation challenge, check an item off the mission checklist, refer the student to another role, or simply go deeper. Used prompts are remembered so the same nudge does not repeat. The effect is a conversation that keeps moving the student toward evidence without handing it over.</p>
+          <div class="case-need" role="note" data-need>[NEED: one concrete exchange that shows the model working, e.g. a student report the CEO sent back and why, or a CFO deflection that pushed a student to Operations first. A short quote from a real or test session.]</div>
+        </div>
+      </section>
+
+      <section class="case-section" id="iteration" aria-labelledby="iteration-title">
+        <div class="stag">✦ 05 · Iteration</div>
+        <h2 class="stitle" id="iteration-title">What changed between the first demo and the last</h2>
+        <div class="case-body" data-fade-children>
+          <p>The repository shows the shape of the iteration: an orchestration overhaul in the middle, then a run of changes that chased trust and latency. What it does not show is the observation behind each change, which is the part I need to add.</p>
+          <ol class="case-changes">
+            <li class="case-change"><span>Structure</span><h3>From open chat to missions</h3><p>The orchestration overhaul replaced free conversation with the CEO-moderated mission loop and the redesigned interview room. <span class="need-inline" data-need>[NEED: what the pre-mission version looked like and the moment that convinced us to add structure]</span></p></li>
+            <li class="case-change"><span>Trust</span><h3>Verdicts grounded in collected evidence</h3><p>The CEO's judgement was re-anchored to the evidence board rather than to the student's own report. A report that merely sounded complete could no longer pass. <span class="need-inline" data-need>[NEED: confirm the trigger, e.g. a test session where a student bluffed through a mission]</span></p></li>
+            <li class="case-change"><span>Latency</span><h3>Reply first, extract later</h3><p>Agent replies now return and stream immediately; evidence extraction, board updates and checklist evaluation run in the background with a per-session lock so concurrent writes do not collide. The thinking indicator was re-timed to the unlock check.</p></li>
+            <li class="case-change"><span>Instructor side</span><h3>Analytics and citations</h3><p>Per-case analytics on the instructor dashboard and a citation flow for final answers, so a submission points at the evidence it rests on.</p></li>
+            <li class="case-change"><span>Positioning</span><h3>Three names in a week</h3><p>CaseIQ became BizSimAI, then AI Business Decision Simulation. <span class="need-inline" data-need>[NEED: why each rename, and which name we'd keep]</span></p></li>
+          </ol>
+          <div class="case-need" role="note" data-need>[NEED: user testing. How many rounds, with whom (classmates, an instructor, strangers), and the two or three findings that changed the design.]</div>
+          <figure class="case-figure">
+            <button class="case-figure-btn" type="button" data-lightbox-item data-cursor="View" aria-label="Open the instructor dashboard screenshot in a larger preview">
+              <img src="../assets/images/ai-business-simulator-instructor-dashboard.webp" alt="Instructor dashboard with published and draft simulations as cards, each showing how many students have submitted, with analytics, edit and delete actions" width="2000" height="1035" loading="lazy" decoding="async">
+            </button>
+            <figcaption><b>Fig. 05</b> Instructor dashboard. Published and draft cases, submissions per case, and a route into analytics for each. The numbers shown are demo data.</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="case-section" id="outcome" aria-labelledby="outcome-title">
+        <div class="stag">✦ 06 · Outcome</div>
+        <h2 class="stitle" id="outcome-title">Where it landed</h2>
+        <div class="case-body" data-fade-children>
+          <p>We shipped a working, deployed platform with the whole loop in it, submitted it to the hackathon's main, impact and prize tracks, and open-sourced it under Apache 2.0.</p>
+          <ul class="case-shipped">
+            <li>End-to-end loop: upload a case, generate and review a playbook, publish, run five missions, receive a scored debrief.</li>
+            <li>Five stakeholder role types with persona routing, information layering and per-turn guide strategies.</li>
+            <li>CEO orchestrator with briefing, evaluating and redirecting modes and a fail-closed verdict.</li>
+            <li>Streaming replies, background evidence extraction and an evidence board with citations.</li>
+            <li>Instructor authoring from PDF, Markdown, text and spreadsheets, plus per-case analytics.</li>
+            <li>Live demo on Vercel, FastAPI backend, Supabase storage, Gemma 4 models via Google AI Studio.</li>
+          </ul>
+          <div class="case-need" role="note" data-need>[NEED: hackathon result. Placement, award or judge feedback, or “no placement” if that is the honest answer.]</div>
+          <div class="case-need" role="note" data-need>[NEED: usage. Number of instructors and students who ran a real session, number of sessions, and any completion or score figures. If none, say it was demo-tested only.]</div>
+          <div class="case-need" role="note" data-need>[NEED: one quote from an instructor or student, with permission.]</div>
+          <p>What I took from it personally is a pattern language for multi-agent interfaces that I keep reusing: a single moderator with legible modes, stakeholders with a visible remit, a persistent roadmap, and a boundary that lives in the data rather than in the prompt.</p>
+        </div>
+      </section>
+
+      <section class="case-section" id="next" aria-labelledby="next-title">
+        <div class="stag">✦ 07 · What I'd do next</div>
+        <h2 class="stitle" id="next-title">What I'd do next</h2>
+        <div class="case-body" data-fade-children>
+          <ul>
+            <li><strong>Make the evidence board a workspace.</strong> Today it is filled in the background. I want students to pull quotes onto claims, see what is missing per mission, and cite from the board in their final answer without leaving it.</li>
+            <li><strong>Show instructors the layers.</strong> The playbook review step edits lists. A visual map of which facts sit behind which interviews would let a teacher tune difficulty by moving an atom, not by rewriting text.</li>
+            <li><strong>Run a real pilot and measure learning.</strong> Question quality across missions, time to first evidence, blind-spot rate. The scoring dimensions exist; they have not been validated against outcomes yet.</li>
+            <li><strong>A phone layout for the interview room.</strong> The three-column screen is desktop-first. The roadmap and handoff should become a bottom sheet, and the stakeholder rail a horizontal strip.</li>
+            <li><strong>Go up the curriculum.</strong> Upper-level courses and professional training want deeper finance and operations models, and multi-session cases that remember what the student decided last week.</li>
+          </ul>
+        </div>
+      </section>
+
+    </article>
+  </div>
+</div>
+
+<nav class="case-footer-nav" aria-label="More work">
+  <div class="case-footer-inner">
+    <div class="case-footer-back">
+      <div>
+        <div class="stag">✦ Selected Work</div>
+        <p>Product thinking leads the story. The rest of the portfolio covers the worlds, systems and visual craft behind it.</p>
+      </div>
+      <div><a href="../index.html#projects" class="btn btn-ghost"><span aria-hidden="true">←</span> Back to work</a></div>
+    </div>
+    <a class="case-next" href="../index.html#proj-dream">
+      <span class="case-next-kicker"><span>Next project</span><span>VFX Art · UI</span></span>
+      <span class="case-next-title">Dream Raiders 2</span>
+      <span class="case-next-desc">Real-time UI VFX in Unity: HUD cues, damage and heal feedback, and character skill effects for a shipped mobile RPG.</span>
+      <span class="case-next-cta">View project <span aria-hidden="true">→</span></span>
+    </a>
+  </div>
+</nav>
+</main>
+
+<footer>© 2026 Toby Tang · Designed with soul.</footer>
+
+<script src="../assets/site.js" defer></script>
+<script src="../assets/motion.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/SplitText.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.min.js" defer></script>
+<script src="../assets/enhance.js" defer></script>
+<script src="../assets/case-study.js" defer></script>
+</body>
+</html>

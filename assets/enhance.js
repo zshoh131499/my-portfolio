@@ -73,6 +73,7 @@
     var desc=hero.querySelector('.hero-desc');
     var ctas=$('.hero-cta .btn',hero);
     var corner=[hero.querySelector('.hero-motion-toggle'),hero.querySelector('.hero-motion-caption')].filter(Boolean);
+    var extras=$('[data-hero-extra]',hero);
     var video=hero.querySelector('.hero-video');
     var navItems=$('.nav-logo, .nav-links li, .menu-btn');
 
@@ -80,7 +81,8 @@
       defaults:{ease:EASE_OUT},
       onComplete:function(){
         state.heroMasks.forEach(function(mask){mask.classList.add('is-open');});
-        gsap.set([tag,desc,pills,ctas,corner,navItems],{clearProps:'transform,opacity'});
+        // Flatten and drop empties: a page without pills or corner controls must not hand GSAP an empty array as a target.
+        gsap.set([tag,desc].concat(pills,ctas,corner,navItems,extras).filter(Boolean),{clearProps:'transform,opacity'});
       }
     });
     if(video)tl.fromTo(video,{scale:1.06},{scale:1,duration:2.2,ease:'power2.out',clearProps:'transform'},0);
@@ -91,6 +93,7 @@
     if(desc)tl.from(desc,{y:16,opacity:0,duration:.7},.95);
     if(ctas.length)tl.from(ctas,{y:16,opacity:0,duration:.7,stagger:.08},1.05);
     if(corner.length)tl.from(corner,{opacity:0,duration:.6},1.25);
+    if(extras.length)tl.from(extras,{y:18,opacity:0,duration:.8,stagger:.08},1.15);
     state.baseTweens.push(tl);
     if(h1)h1.setAttribute('data-intro','played');
   }
@@ -156,6 +159,12 @@
     if(contact){
       fadeGroup($('.contact-desc, .contact-btns a, .contact-row, .contact-meta',contact),contact,{stagger:.1,start:'top 80%'});
     }
+    // Generic hooks for secondary pages: a [data-fade-children] container
+    // staggers its direct children in; a [data-fade] element fades in alone.
+    $('[data-fade-children]').forEach(function(group){
+      fadeGroup($(':scope > *',group),group,{stagger:.08});
+    });
+    $('[data-fade]').forEach(function(el){fadeGroup([el],el,{y:28});});
   }
 
   function projectReveals(){
@@ -212,7 +221,7 @@
     state.baseTriggers.forEach(function(trigger){trigger.kill();});
     state.baseTweens=[];state.baseTriggers=[];
     state.heroMasks.forEach(function(mask){mask.classList.add('is-open');});
-    gsap.set('.hero-tag, .hero h1 .line, .role-pill, .hero-desc, .hero-cta .btn, .hero-motion-toggle, .hero-motion-caption, .nav-logo, .nav-links li, .menu-btn, .proj, .proj-thumb, .proj-thumb img, .proj-info > *, .proj-gallery, .stag, .section-note, .about-text p, .about-card, .exp-card, .edu-card, .signal-intro, .contact-desc, .contact-btns a, .contact-row, .contact-meta, .timeline-progress, .scroll-progress',{clearProps:'all'});
+    gsap.set('.hero-tag, .hero h1 .line, .role-pill, .hero-desc, .hero-cta .btn, .hero-motion-toggle, .hero-motion-caption, [data-hero-extra], .nav-logo, .nav-links li, .menu-btn, .proj, .proj-thumb, .proj-thumb img, .proj-info > *, .proj-gallery, .stag, .section-note, .about-text p, .about-card, .exp-card, .edu-card, .signal-intro, .contact-desc, .contact-btns a, .contact-row, .contact-meta, [data-fade-children] > *, [data-fade], .timeline-progress, .scroll-progress',{clearProps:'all'});
     root.classList.remove('is-enhanced');
   }
 
@@ -304,6 +313,8 @@
     var last=null;
     var settle=0;
     var labelFor=function(target){
+      var custom=target.closest('[data-cursor]');
+      if(custom)return custom.getAttribute('data-cursor')||'';
       if(target.closest('.proj-thumb'))return 'View';
       if(target.closest('.gallery-thumb'))return 'Open';
       if(target.closest('.lightbox-nav'))return target.closest('.lightbox-prev')?'Prev':'Next';
