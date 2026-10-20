@@ -251,7 +251,7 @@ function absoluteUrl(src){
   try{return new URL(src,document.baseURI).href;}catch(error){return src;}
 }
 
-function collectLightboxItems(project,image){
+function collectLightboxItems(trigger,image){
   var items=[];
   function add(src,alt){
     if(!src)return;
@@ -259,7 +259,13 @@ function collectLightboxItems(project,image){
     if(items.some(function(item){return item.href===href;}))return;
     items.push({href:href,src:src,alt:alt||''});
   }
-  if(project){
+  // Case-study pages group standalone figures with [data-lightbox-group];
+  // every [data-lightbox-item] inside becomes one page of the same preview.
+  var group=trigger?trigger.closest('[data-lightbox-group]'):null;
+  var project=trigger?trigger.closest('.proj'):null;
+  if(group){
+    Array.prototype.forEach.call(group.querySelectorAll('[data-lightbox-item] img'),function(figure){add(figure.currentSrc||figure.src,figure.alt);});
+  }else if(project){
     var hero=project.querySelector('.proj-thumb img');
     if(hero)add(hero.dataset.lightboxSrc||hero.currentSrc||hero.src,hero.dataset.lightboxAlt||hero.alt);
     Array.prototype.forEach.call(project.querySelectorAll('.gallery-thumb img'),function(thumb){add(thumb.currentSrc||thumb.src,thumb.alt);});
@@ -289,7 +295,7 @@ function openLightbox(trigger,image){
   if(!image)return;
   setMenu(false,false);
   lastLightboxTrigger=trigger;
-  lightboxItems=collectLightboxItems(trigger.closest('.proj'),image);
+  lightboxItems=collectLightboxItems(trigger,image);
   var currentHref=absoluteUrl(image.currentSrc||image.src);
   var startIndex=lightboxItems.findIndex(function(item){return item.href===currentHref;});
   showLightboxItem(startIndex<0?0:startIndex);
@@ -350,6 +356,9 @@ document.addEventListener('click',function(event){
 
   var projectImageButton=event.target.closest('.proj-thumb');
   if(projectImageButton){openLightbox(projectImageButton,projectImageButton.querySelector('img'));return;}
+
+  var lightboxItemButton=event.target.closest('[data-lightbox-item]');
+  if(lightboxItemButton){openLightbox(lightboxItemButton,lightboxItemButton.querySelector('img'));return;}
 
   if(event.target.closest('#lightboxPrev')){stepLightbox(-1);return;}
   if(event.target.closest('#lightboxNext')){stepLightbox(1);return;}
