@@ -169,7 +169,7 @@
   (function manageHeroVideo(){
     var video=document.querySelector('.hero-video');
     if(!video)return;
-    // The 4 MB footage is desktop-only: below 900px the poster stands in and nothing
+    // The footage is desktop-only: below 900px the poster stands in and nothing
     // is fetched. The <source media="(min-width: 900px)"> in the markup declares the same rule.
     var footageQuery=window.matchMedia('(min-width: 900px)');
     var initialRect=video.getBoundingClientRect();

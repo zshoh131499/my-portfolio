@@ -7,7 +7,7 @@ The portfolio presents Toby as a multidisciplinary product designer who turns pa
 ## Existing identity assets
 
 - Wordmark: `TOBY TANG`, set in Anybody, heavy weight.
-- Hero world: the pixel-city video in `hero-bg.mp4`.
+- Hero world: the pixel-city video. `hero-bg.mp4` at the repo root is the 1944×1064 master and is not deployed; the site ships the 1280 and 1920 wide H.264 and VP9 tiers in `assets/video/`.
 - Portrait: `assets/images/toby-tang-headshot.webp`.
 - Project imagery: the WebP files in `assets/images/` remain the primary proof and should not be obscured by effects.
 
@@ -19,7 +19,7 @@ The portfolio presents Toby as a multidisciplinary product designer who turns pa
 - Sunset purple: `#c084fc`.
 - Coral: `#ff6b7f`.
 - Cream text: `#fff5eb`.
-- Display: Anybody. Body: Outfit. Technical labels: Space Mono.
+- Display: Anybody. Body: Outfit. Technical labels: Space Mono. All three are self-hosted from `assets/fonts/` (latin and latin-ext subsets, SIL OFL); Outfit 400–700, Anybody 700–900, Space Mono 400 and 700 are the weights in use.
 - Cards use 6–12 px radii, thin translucent borders, and restrained shadows. Glow is reserved for the Hero flow, the active capability, and the Featured Product Case.
 
 ## Motion language
@@ -68,7 +68,7 @@ The portfolio presents Toby as a multidisciplinary product designer who turns pa
 
 The enhancement layer sits on top of `motion.js` and borrows the vocabulary of award-winning typographic portfolios: smooth scrolling, masked text reveals, scroll-linked parallax, a cursor follower and magnetic controls. It never replaces the particle system and degrades to the CSS fallbacks when GSAP is unavailable.
 
-- Libraries: GSAP 3.13 core, ScrollTrigger and SplitText, plus Lenis 1.3 for smooth scrolling. All are pinned CDN builds; `html.no-enhance` marks a page where they failed to load.
+- Libraries: GSAP 3.13 core, ScrollTrigger and SplitText, plus Lenis 1.3 for smooth scrolling. All are pinned builds self-hosted in `assets/vendor/` with their licenses; `html.no-enhance` marks a page where they failed to load.
 - **Base tier** (`html.is-enhanced`, any profile except Static): hero entrance choreography with masked headline lines, one-shot section reveals (titles split into masked lines on entry and reverted afterwards), project card wipe-ins, the experience timeline draw and the top scroll-progress line.
 - **Rich tier** (`html.is-rich`, fine pointer and motion not paused): Lenis smooth scroll, hero exit parallax, thumbnail parallax (images are oversized by 18% so no edge shows), the cursor follower with `View` / `Open` labels, magnetic CTAs and the scroll-velocity-driven tools marquee.
 - Pause Motion tears the rich tier down and restores native scrolling and the CSS marquee; Static and `prefers-reduced-motion` skip both tiers. Menu and lightbox open states stop Lenis so focus trapping keeps working.
