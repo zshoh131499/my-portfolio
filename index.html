@@ -88,8 +88,8 @@ nav.hide{transform:translateY(-100%)}
 .btn-ghost:hover{border-color:var(--pool);color:var(--pool)}
 @keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 
-.about,.projects,.tools-section,.signal-lab,.experience-section,.education-section,.contact-section{isolation:isolate}
-.about::after,.projects::after,.tools-section::after,.signal-lab::after,.experience-section::after,.education-section::after{content:'';position:absolute;left:50%;bottom:0;width:min(88rem,calc(100vw - 3rem));height:1px;transform:translateX(-50%);background:linear-gradient(90deg,transparent,rgba(255,245,235,.12),transparent);pointer-events:none}
+.about,.projects,.recognition,.tools-section,.signal-lab,.experience-section,.education-section,.contact-section{isolation:isolate}
+.about::after,.projects::after,.recognition::after,.tools-section::after,.signal-lab::after,.experience-section::after,.education-section::after{content:'';position:absolute;left:50%;bottom:0;width:min(88rem,calc(100vw - 3rem));height:1px;transform:translateX(-50%);background:linear-gradient(90deg,transparent,rgba(255,245,235,.12),transparent);pointer-events:none}
 
 .about{position:relative;overflow:hidden;background:linear-gradient(180deg,var(--surface-0) 0%,#10184a 52%,var(--surface-2) 100%);padding:6rem 2.5rem}
 .about::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 42% at 86% 12%,rgba(0,212,255,.055),transparent 60%),radial-gradient(ellipse 44% 36% at 12% 62%,rgba(192,132,252,.045),transparent 64%);pointer-events:none}
@@ -612,6 +612,61 @@ html.has-cursor .proj-thumb,html.has-cursor .gallery-thumb{cursor:none}
 .hero.has-fluid .hero-fluid{opacity:.92}
 .hero.has-fluid .hero-particle-field{opacity:.3}
 @media(prefers-reduced-motion:reduce){.hero-fluid{display:none}}
+
+/* Recognition strip: one quiet row of monospaced labels between Selected Work and About */
+.recognition{position:relative;padding:1.15rem 2.5rem;background:var(--surface-2)}
+.recognition-inner{max-width:1280px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:baseline;gap:.5rem 1.6rem;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.12em;line-height:1.6;text-transform:uppercase}
+.recognition-kicker{margin:0;font-family:inherit;font-size:inherit;font-weight:700;letter-spacing:.3em;color:var(--pool)}
+.recognition-list{display:flex;flex-wrap:wrap;align-items:baseline;row-gap:.5rem;list-style:none;margin:0 0 0 -2.2rem;padding:0;clip-path:inset(0 0 0 2.2rem);color:rgba(255,245,235,.72)}
+.recognition-list li{position:relative;padding-left:2.2rem;white-space:nowrap}
+.recognition-list li::before{content:'';position:absolute;left:calc(1.1rem - 1.5px);top:50%;width:3px;height:3px;margin-top:-1.5px;border-radius:50%;background:rgba(255,245,235,.3)}
+.recognition[data-reveal] .recognition-inner{opacity:0;transform:translateY(var(--motion-distance));transition:opacity var(--motion-slow) var(--ease-out),transform var(--motion-slow) var(--ease-out)}
+.recognition.is-revealed .recognition-inner{opacity:1;transform:none}
+html[data-motion-profile="static"] .recognition[data-reveal] .recognition-inner,.motion-paused .recognition[data-reveal] .recognition-inner{opacity:1;transform:none;transition:none}
+@media(max-width:900px){.recognition{padding:1rem 1.5rem}}
+@media(max-width:600px){.recognition-inner{letter-spacing:.08em}.recognition-list li{white-space:normal}}
+@media(prefers-reduced-motion:reduce){.recognition[data-reveal] .recognition-inner{opacity:1;transform:none}}
+
+/* Tablet layout (701–1100px): two-column work grid, three-up expertise, stacked featured case */
+@media(max-width:900px){
+  #proj-bizsim .proj-thumb{aspect-ratio:2000/1007;min-height:0}
+  #proj-bizsim .proj-thumb img{object-fit:cover}
+}
+@media(max-width:700px){
+  .proj:not(#proj-bizsim) .proj-thumb{aspect-ratio:16/9}
+}
+@media(min-width:701px) and (max-width:1100px){
+  .projects-layout{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .proj{grid-column:auto}
+  #proj-bizsim,#proj-calli{grid-column:1/-1}
+  .proj:not(#proj-bizsim) .proj-thumb{min-height:0}
+  #proj-bizsim .proj-top{grid-template-columns:1fr;min-height:0}
+  #proj-bizsim .proj-thumb{order:-1;aspect-ratio:2000/1007;min-height:0}
+  #proj-bizsim .proj-thumb img{object-fit:cover}
+  #proj-bizsim .proj-case-meta{grid-template-columns:repeat(3,minmax(0,1fr));max-width:34rem}
+  #proj-bizsim .proj-case-meta div{border-right:1px solid rgba(255,245,235,.08);border-bottom:0}
+  #proj-bizsim .proj-case-meta div:last-child{border-right:0}
+  .featured-case-kicker{align-items:flex-start}
+  #proj-calli .proj-thumb{aspect-ratio:21/9;max-height:420px}
+  #proj-calli .proj-info{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);column-gap:2rem;align-content:start}
+  #proj-calli .proj-info>*{grid-column:1}
+  #proj-calli .proj-case-meta{grid-column:2;grid-row:1/span 4;grid-template-columns:1fr;margin:0}
+  #proj-calli .proj-case-meta div{border-right:0;border-bottom:1px solid rgba(255,245,235,.08)}
+  #proj-calli .proj-case-meta div:last-child{border-bottom:0}
+  #proj-calli .proj-link{justify-self:start}
+  .expertise-cards{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .exp-card-product{grid-column:1/-1;min-height:300px}
+}
+@media(min-width:901px) and (max-width:1100px){
+  /* Stacked featured case: copy on the left, proof (meta, tags, actions) on the right */
+  #proj-bizsim .proj-info{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);column-gap:2.5rem;align-content:start}
+  #proj-bizsim .featured-case-kicker{grid-column:1/-1}
+  #proj-bizsim .proj-info h3{grid-column:1;grid-row:2}
+  #proj-bizsim .featured-lede{grid-column:1;grid-row:3/span 3;margin-bottom:0}
+  #proj-bizsim .proj-case-meta{grid-column:2;grid-row:2;margin:0 0 1rem;max-width:none;align-self:start}
+  #proj-bizsim .proj-tags{grid-column:2;grid-row:3}
+  #proj-bizsim .featured-actions{grid-column:2;grid-row:4;align-self:start}
+}
 </style>
 </head>
 <body>
@@ -761,6 +816,17 @@ html.has-cursor .proj-thumb,html.has-cursor .gallery-thumb{cursor:none}
 
 
     </div>
+  </div>
+</section>
+
+<section class="recognition" id="recognition" aria-labelledby="recognition-title" data-reveal>
+  <div class="recognition-inner">
+    <h2 class="recognition-kicker" id="recognition-title">✦ Recognition</h2>
+    <ul class="recognition-list">
+      <li>Excellence in Design, RPI GameFest 2023</li>
+      <li>Dean's Honor List 2022–2024</li>
+      <li>Cornell M.P.S. GPA 4.17</li>
+    </ul>
   </div>
 </section>
 
