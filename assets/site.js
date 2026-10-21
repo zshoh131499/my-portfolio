@@ -247,6 +247,12 @@ Array.prototype.forEach.call(document.querySelectorAll('.proj .proj-thumb img'),
   image.dataset.lightboxAlt=image.alt;
 });
 
+// Thumbnails carry a srcset, so currentSrc may be a 480px rendition; the lightbox and the
+// hero swap always want the full-size file the src attribute points at.
+function fullSizeSrc(image){
+  return image.getAttribute('src')||image.currentSrc||image.src;
+}
+
 function absoluteUrl(src){
   try{return new URL(src,document.baseURI).href;}catch(error){return src;}
 }
@@ -262,9 +268,9 @@ function collectLightboxItems(project,image){
   if(project){
     var hero=project.querySelector('.proj-thumb img');
     if(hero)add(hero.dataset.lightboxSrc||hero.currentSrc||hero.src,hero.dataset.lightboxAlt||hero.alt);
-    Array.prototype.forEach.call(project.querySelectorAll('.gallery-thumb img'),function(thumb){add(thumb.currentSrc||thumb.src,thumb.alt);});
+    Array.prototype.forEach.call(project.querySelectorAll('.gallery-thumb img'),function(thumb){add(fullSizeSrc(thumb),thumb.alt);});
   }
-  add(image.currentSrc||image.src,image.alt);
+  add(fullSizeSrc(image),image.alt);
   return items;
 }
 
@@ -290,7 +296,7 @@ function openLightbox(trigger,image){
   setMenu(false,false);
   lastLightboxTrigger=trigger;
   lightboxItems=collectLightboxItems(trigger.closest('.proj'),image);
-  var currentHref=absoluteUrl(image.currentSrc||image.src);
+  var currentHref=absoluteUrl(fullSizeSrc(image));
   var startIndex=lightboxItems.findIndex(function(item){return item.href===currentHref;});
   showLightboxItem(startIndex<0?0:startIndex);
   lightbox.hidden=false;
@@ -326,7 +332,9 @@ document.addEventListener('click',function(event){
       heroImage.style.opacity='0';
       heroImage.style.transform='scale(1.05)';
       window.setTimeout(function(){
-        heroImage.src=selectedImage.currentSrc||selectedImage.src;
+        var selectedSrcset=selectedImage.getAttribute('srcset');
+        if(selectedSrcset)heroImage.setAttribute('srcset',selectedSrcset);else heroImage.removeAttribute('srcset');
+        heroImage.src=fullSizeSrc(selectedImage);
         heroImage.alt=selectedImage.alt;
         var heroButton=heroImage.closest('.proj-thumb');
         if(heroButton)heroButton.setAttribute('aria-label','Open '+selectedImage.alt+' preview');

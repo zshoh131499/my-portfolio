@@ -28,7 +28,7 @@ jobs:
       - name: Prepare static site
         run: |
           mkdir -p site
-          cp index.html hero-bg.mp4 .nojekyll site/
+          cp index.html .nojekyll site/
           cp -R assets site/
       - name: Upload static site
         uses: actions/upload-pages-artifact@v4
